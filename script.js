@@ -1,28 +1,23 @@
-// script.js
-
 // Global state
 let currentScene = 0;
 const totalScenes = 4;
+let allData = null;  // store CSV data globally
 
-// Load a sample CSV file to test data loading
+// Load CSV once and store data globally
 d3.csv("college_data/c2017_b_rv.csv").then(data => {
+  allData = data;
   d3.select("#loading").style("display", "none");
-
-  // Log data to verify
   console.log("CSV loaded:", data.slice(0, 5));
-
-  // Draw initial chart (basic race-based completions)
-  drawScene1(data);
+  updateScene();  // Draw initial scene
 }).catch(err => {
   console.error("Data loading error:", err);
   d3.select("#loading").text("Failed to load data.");
 });
 
-// Scene rendering
+// Scene drawing functions
 function drawScene1(data) {
-  d3.select("#chart").selectAll("*").remove(); // Clear previous
+  d3.select("#chart").selectAll("*").remove();
 
-  // Simple bar chart: completions by race
   const raceKeys = [
     "Black or African American",
     "Hispanic/Latino",
@@ -73,7 +68,57 @@ function drawScene1(data) {
     .call(d3.axisBottom(x));
 }
 
-// Scene navigation buttons
+function drawScene2(data) {
+  // Placeholder: implement the second scene's visualization using data
+  d3.select("#chart").selectAll("*").remove();
+  d3.select("#chart").append("text")
+    .attr("x", 20).attr("y", 50)
+    .text("Scene 2 - To be implemented");
+}
+
+function drawScene3(data) {
+  // Placeholder: implement the third scene's visualization using data
+  d3.select("#chart").selectAll("*").remove();
+  d3.select("#chart").append("text")
+    .attr("x", 20).attr("y", 50)
+    .text("Scene 3 - To be implemented");
+}
+
+function drawScene4(data) {
+  // Placeholder: implement the fourth scene's visualization using data
+  d3.select("#chart").selectAll("*").remove();
+  d3.select("#chart").append("text")
+    .attr("x", 20).attr("y", 50)
+    .text("Scene 4 - To be implemented");
+}
+
+// Update scene indicator and render current scene
+function updateScene() {
+  d3.select("#scene-indicator").text(`Scene ${currentScene + 1} of ${totalScenes}`);
+  console.log("Switched to scene", currentScene);
+
+  if (!allData) {
+    console.warn("Data not loaded yet");
+    return;
+  }
+
+  switch(currentScene) {
+    case 0:
+      drawScene1(allData);
+      break;
+    case 1:
+      drawScene2(allData);
+      break;
+    case 2:
+      drawScene3(allData);
+      break;
+    case 3:
+      drawScene4(allData);
+      break;
+  }
+}
+
+// Navigation buttons
 d3.select("#prevBtn").on("click", () => {
   if (currentScene > 0) {
     currentScene--;
@@ -87,10 +132,3 @@ d3.select("#nextBtn").on("click", () => {
     updateScene();
   }
 });
-
-// Update scene indicator
-function updateScene() {
-  d3.select("#scene-indicator").text(`Scene ${currentScene + 1} of ${totalScenes}`);
-  console.log("Switched to scene", currentScene);
-  // TODO: Call appropriate scene drawing function
-}
