@@ -34,17 +34,28 @@ d3.select("#demographic").on("change", function() {
 });
 
 function filterData(data) {
-  // Filter by institution type CONTROL column
   let filtered = data;
 
+  // Filter by institution type CONTROL column
   if (currentInstitutionType === "public") {
     filtered = filtered.filter(d => d.CONTROL === "1");
   } else if (currentInstitutionType === "private") {
-    // Private can include both nonprofit (2) and for-profit (3), or separate if you want
     filtered = filtered.filter(d => d.CONTROL === "2" || d.CONTROL === "3");
   }
 
-  // No further filtering here for demographic because we filter in the chart keys
+  // Filter rows by demographic selected: only institutions with >0 completions in that demographic
+  if (currentDemographic !== "all") {
+    const keyMap = {
+      black: "CSBKAAT",
+      hispanic: "CSHISPT",
+      white: "CSWHITT",
+      asian: "CSASIAW",
+      native: "CSAIANT"
+    };
+    const col = keyMap[currentDemographic];
+    filtered = filtered.filter(d => +d[col] > 0);
+  }
+
   return filtered;
 }
 
@@ -59,7 +70,6 @@ function drawScene1(data) {
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
   // Define race columns & labels
-  // If demographic is "all" show all, else only selected race
   const allRaceKeys = [
     "CSBKAAT",
     "CSHISPT",
@@ -91,7 +101,7 @@ function drawScene1(data) {
   } else if (currentDemographic === "native") {
     raceKeysToShow = ["CSAIANT"];
   } else {
-    raceKeysToShow = allRaceKeys;  // fallback
+    raceKeysToShow = allRaceKeys;
   }
 
   // Sum totals for each race column
