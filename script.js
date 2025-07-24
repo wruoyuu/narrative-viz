@@ -3,7 +3,10 @@ let currentScene = 0;
 const totalScenes = 4;
 let allData = null;  // store CSV data globally
 
-// Dimensions for SVG and margin
+// Keep track of current filter values
+let currentInstitutionType = "all";
+let currentDemographic = "all";
+
 const margin = { top: 20, right: 20, bottom: 50, left: 150 };
 const width = 800 - margin.left - margin.right;
 const height = 500 - margin.top - margin.bottom;
@@ -19,7 +22,31 @@ d3.csv("college_data/c2017_b_rv.csv").then(data => {
   d3.select("#loading").text("Failed to load data.");
 });
 
-// Scene drawing functions
+// Add event listeners for filters
+d3.select("#institution-type").on("change", function() {
+  currentInstitutionType = this.value;
+  updateScene();
+});
+
+d3.select("#demographic").on("change", function() {
+  currentDemographic = this.value;
+  updateScene();
+});
+
+function filterData(data) {
+  // Filter by institution type CONTROL column
+  let filtered = data;
+
+  if (currentInstitutionType === "public") {
+    filtered = filtered.filter(d => d.CONTROL === "1");
+  } else if (currentInstitutionType === "private") {
+    // Private can include both nonprofit (2) and for-profit (3), or separate if you want
+    filtered = filtered.filter(d => d.CONTROL === "2" || d.CONTROL === "3");
+  }
+
+  // No further filtering here for demographic because we filter in the chart keys
+  return filtered;
+}
 
 function drawScene1(data) {
   const svg = d3.select("#chart")
@@ -31,7 +58,9 @@ function drawScene1(data) {
   const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  const raceKeys = [
+  // Define race columns & labels
+  // If demographic is "all" show all, else only selected race
+  const allRaceKeys = [
     "CSBKAAT",
     "CSHISPT",
     "CSWHITT",
@@ -47,8 +76,26 @@ function drawScene1(data) {
     CSAIANT: "American Indian or Alaska Native"
   };
 
+  let raceKeysToShow;
+
+  if (currentDemographic === "all") {
+    raceKeysToShow = allRaceKeys;
+  } else if (currentDemographic === "black") {
+    raceKeysToShow = ["CSBKAAT"];
+  } else if (currentDemographic === "hispanic") {
+    raceKeysToShow = ["CSHISPT"];
+  } else if (currentDemographic === "white") {
+    raceKeysToShow = ["CSWHITT"];
+  } else if (currentDemographic === "asian") {
+    raceKeysToShow = ["CSASIAW"];
+  } else if (currentDemographic === "native") {
+    raceKeysToShow = ["CSAIANT"];
+  } else {
+    raceKeysToShow = allRaceKeys;  // fallback
+  }
+
   // Sum totals for each race column
-  const completionData = raceKeys.map(colName => {
+  const completionData = raceKeysToShow.map(colName => {
     const total = d3.sum(data, d => {
       const val = +d[colName];
       return isNaN(val) ? 0 : val;
@@ -56,7 +103,7 @@ function drawScene1(data) {
     return { race: raceLabels[colName], total };
   });
 
-  console.log("Completion data totals:", completionData);
+  console.log("Filtered completion data:", completionData);
 
   const maxTotal = d3.max(completionData, d => d.total);
   const x = d3.scaleLinear()
@@ -117,7 +164,6 @@ function drawScene4(data) {
     .text("Scene 4 - To be implemented");
 }
 
-// Update scene indicator and render current scene
 function updateScene() {
   d3.select("#scene-indicator").text(`Scene ${currentScene + 1} of ${totalScenes}`);
   console.log("Switched to scene", currentScene);
@@ -127,18 +173,21 @@ function updateScene() {
     return;
   }
 
+  // Apply filters
+  const filteredData = filterData(allData);
+
   switch(currentScene) {
     case 0:
-      drawScene1(allData);
+      drawScene1(filteredData);
       break;
     case 1:
-      drawScene2(allData);
+      drawScene2(filteredData);
       break;
     case 2:
-      drawScene3(allData);
+      drawScene3(filteredData);
       break;
     case 3:
-      drawScene4(allData);
+      drawScene4(filteredData);
       break;
   }
 }
