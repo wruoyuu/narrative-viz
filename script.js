@@ -1,124 +1,96 @@
 // script.js
 
-// Central state object
-const state = {
-  completionData: [],
-  enrollmentData: [],
-  mergedData: []
-};
+// Global state
+let currentScene = 0;
+const totalScenes = 4;
 
-// Show or hide a loading message
-function showLoading(show) {
-  const loading = document.getElementById("loading");
-  if (loading) loading.style.display = show ? "block" : "none";
-}
+// Load a sample CSV file to test data loading
+d3.csv("college_data/c2017_b_rv.csv").then(data => {
+  d3.select("#loading").style("display", "none");
 
-// Merge datasets (placeholder – adjust as needed)
-function mergeDatasets() {
-  // Simple example: flatten and add a "type" field
-  const merged = [];
+  // Log data to verify
+  console.log("CSV loaded:", data.slice(0, 5));
 
-  state.completionData.forEach((dataset, index) => {
-    dataset.forEach(d => {
-      d.year = 2023 - index; // Assuming files are in reverse order
-      d.source = "completions";
-      merged.push(d);
-    });
-  });
+  // Draw initial chart (basic race-based completions)
+  drawScene1(data);
+}).catch(err => {
+  console.error("Data loading error:", err);
+  d3.select("#loading").text("Failed to load data.");
+});
 
-  state.enrollmentData.forEach((dataset, index) => {
-    dataset.forEach(d => {
-      d.year = 2023 - index;
-      d.source = "enrollment";
-      merged.push(d);
-    });
-  });
+// Scene rendering
+function drawScene1(data) {
+  d3.select("#chart").selectAll("*").remove(); // Clear previous
 
-  return merged;
-}
-
-// Load only 2023 first
-async function loadData() {
-  showLoading(true);
-  try {
-    const comp2023 = await d3.csv("college_data/c2023_b.csv");
-    const enroll2023 = await d3.csv("college_data/ef2023a.csv");
-
-    state.completionData = [comp2023];
-    state.enrollmentData = [enroll2023];
-
-    state.mergedData = mergeDatasets();
-    initVisualization(); // First scene or chart
-
-    // Load remaining data in background
-    setTimeout(loadRemainingData, 100);
-
-  } catch (error) {
-    console.error("Error loading data:", error);
-    alert("Failed to load data.");
-  } finally {
-    showLoading(false);
-  }
-}
-
-// Load all remaining years
-async function loadRemainingData() {
-  const restCompletion = [
-    "college_data/c2017_b_rv.csv",
-    "college_data/c2018_b_rv.csv",
-    "college_data/c2019_b_rv.csv",
-    "college_data/c2020_b_rv.csv",
-    "college_data/c2021_b_rv.csv",
-    "college_data/c2022_b_rv.csv"
-  ];
-  const restEnrollment = [
-    "college_data/ef2017a_rv.csv",
-    "college_data/ef2018a_rv.csv",
-    "college_data/ef2019a_rv.csv",
-    "college_data/ef2020a_rv.csv",
-    "college_data/ef2021a_rv.csv",
-    "college_data/ef2022a_rv.csv"
+  // Simple bar chart: completions by race
+  const raceKeys = [
+    "Black or African American",
+    "Hispanic/Latino",
+    "White",
+    "Asian",
+    "American Indian or Alaska Native"
   ];
 
-  try {
-    console.time("Loading older years");
+  const margin = { top: 20, right: 20, bottom: 50, left: 100 };
+  const width = 800 - margin.left - margin.right;
+  const height = 500 - margin.top - margin.bottom;
 
-    const compData = await Promise.all(restCompletion.map(f => d3.csv(f)));
-    const enrollData = await Promise.all(restEnrollment.map(f => d3.csv(f)));
+  const svg = d3.select("#chart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Put older years in front so data is sorted 2017 to 2023
-    state.completionData.unshift(...compData.reverse());
-    state.enrollmentData.unshift(...enrollData.reverse());
+  const completionData = raceKeys.map(race => {
+    const total = d3.sum(data, d => +d[race] || 0);
+    return { race, total };
+  });
 
-    state.mergedData = mergeDatasets();
+  const x = d3.scaleLinear()
+    .domain([0, d3.max(completionData, d => d.total)])
+    .range([0, width]);
 
-    updateScene(); // Redraw chart with all years
+  const y = d3.scaleBand()
+    .domain(completionData.map(d => d.race))
+    .range([0, height])
+    .padding(0.2);
 
-    console.timeEnd("Loading older years");
+  svg.selectAll(".bar")
+    .data(completionData)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("y", d => y(d.race))
+    .attr("width", d => x(d.total))
+    .attr("height", y.bandwidth())
+    .attr("fill", "#5b9bd5");
 
-  } catch (err) {
-    console.warn("Problem loading historical data:", err);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x));
+}
+
+// Scene navigation buttons
+d3.select("#prevBtn").on("click", () => {
+  if (currentScene > 0) {
+    currentScene--;
+    updateScene();
   }
-}
+});
 
-// Initial visualization (placeholder)
-function initVisualization() {
-  d3.select("#vis").append("p").text("✅ Data loaded for 2023. Waiting for all years…");
+d3.select("#nextBtn").on("click", () => {
+  if (currentScene < totalScenes - 1) {
+    currentScene++;
+    updateScene();
+  }
+});
 
-  // Here’s where you’ll build Scene 1: draw chart, annotate, etc.
-}
-
-// Called once all years are loaded
+// Update scene indicator
 function updateScene() {
-  d3.select("#vis").html(""); // Clear
-
-  // Example: show data length
-  d3.select("#vis")
-    .append("p")
-    .text(`✅ All years loaded. Merged rows: ${state.mergedData.length}`);
-
-  // Add your full visualization or update logic here
+  d3.select("#scene-indicator").text(`Scene ${currentScene + 1} of ${totalScenes}`);
+  console.log("Switched to scene", currentScene);
+  // TODO: Call appropriate scene drawing function
 }
-
-// Load on DOM ready
-document.addEventListener("DOMContentLoaded", loadData);
