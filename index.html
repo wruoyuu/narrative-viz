@@ -1,25 +1,23 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>COVID-19 & College Outcomes</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://d3js.org/d3-annotation.v2.min.js"></script>
-  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/d3-annotation@2.5.1/dist/d3-annotation.min.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="header">
     <h1>How COVID-19 Reshaped College Completion</h1>
-    <p>An analysis of IPEDS data (2017-2023)</p>
+    <p>An analysis of IPEDS data (2017–2023)</p>
   </div>
-
   <div id="navigation">
     <button id="prevBtn" class="nav-btn">← Previous</button>
     <span id="scene-indicator">Scene 1 of 4</span>
     <button id="nextBtn" class="nav-btn">Next →</button>
   </div>
-
   <div id="filters">
     <select id="institution-type" class="filter-dropdown">
       <option value="all">All Institutions</option>
@@ -32,7 +30,6 @@
       <option value="hispanic">Hispanic Students</option>
     </select>
   </div>
-
   <div id="chart-container">
     <div id="loading">
       <img src="assets/loading.gif" alt="Loading data...">
@@ -40,16 +37,16 @@
     <svg id="chart"></svg>
     <div id="tooltip"></div>
   </div>
-
   <div id="footer">
-    <p>Data: IPEDS Completion & Enrollment Surveys (2017-2023)</p>
+    <p>Data: IPEDS Completion & Enrollment Surveys (2017–2023)</p>
   </div>
 
   <script src="script.js"></script>
 </body>
-</html> -->
+</html>
 
-<!-- index.html -->
+
+<!-- index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,4 +60,4 @@
     d3.select("body").append("p").text("D3 is working!");
   </script>
 </body>
-</html>
+</html> -->
