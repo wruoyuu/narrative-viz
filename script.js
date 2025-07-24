@@ -3,6 +3,11 @@ let currentScene = 0;
 const totalScenes = 4;
 let allData = null;  // store CSV data globally
 
+// Dimensions for SVG and margin
+const margin = { top: 20, right: 20, bottom: 50, left: 150 };
+const width = 800 - margin.left - margin.right;
+const height = 500 - margin.top - margin.bottom;
+
 // Load CSV once and store data globally
 d3.csv("college_data/c2017_b_rv.csv").then(data => {
   allData = data;
@@ -15,34 +20,47 @@ d3.csv("college_data/c2017_b_rv.csv").then(data => {
 });
 
 // Scene drawing functions
+
 function drawScene1(data) {
-  d3.select("#chart").selectAll("*").remove();
-
-  const raceKeys = [
-    "Black or African American",
-    "Hispanic/Latino",
-    "White",
-    "Asian",
-    "American Indian or Alaska Native"
-  ];
-
-  const margin = { top: 20, right: 20, bottom: 50, left: 100 };
-  const width = 800 - margin.left - margin.right;
-  const height = 500 - margin.top - margin.bottom;
-
   const svg = d3.select("#chart")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
+    .attr("height", height + margin.top + margin.bottom);
+
+  svg.selectAll("*").remove();
+
+  const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  const completionData = raceKeys.map(race => {
-    const total = d3.sum(data, d => +d[race] || 0);
-    return { race, total };
+  const raceKeys = [
+    "CSBKAAT",
+    "CSHISPT",
+    "CSWHITT",
+    "CSASIAW",
+    "CSAIANT"
+  ];
+
+  const raceLabels = {
+    CSBKAAT: "Black or African American",
+    CSHISPT: "Hispanic/Latino",
+    CSWHITT: "White",
+    CSASIAW: "Asian",
+    CSAIANT: "American Indian or Alaska Native"
+  };
+
+  // Sum totals for each race column
+  const completionData = raceKeys.map(colName => {
+    const total = d3.sum(data, d => {
+      const val = +d[colName];
+      return isNaN(val) ? 0 : val;
+    });
+    return { race: raceLabels[colName], total };
   });
 
+  console.log("Completion data totals:", completionData);
+
+  const maxTotal = d3.max(completionData, d => d.total);
   const x = d3.scaleLinear()
-    .domain([0, d3.max(completionData, d => d.total)])
+    .domain([0, maxTotal > 0 ? maxTotal : 10])
     .range([0, width]);
 
   const y = d3.scaleBand()
@@ -50,7 +68,8 @@ function drawScene1(data) {
     .range([0, height])
     .padding(0.2);
 
-  svg.selectAll(".bar")
+  // Bars
+  g.selectAll(".bar")
     .data(completionData)
     .enter()
     .append("rect")
@@ -60,16 +79,24 @@ function drawScene1(data) {
     .attr("height", y.bandwidth())
     .attr("fill", "#5b9bd5");
 
-  svg.append("g")
+  // Y-axis (race names)
+  g.append("g")
     .call(d3.axisLeft(y));
 
-  svg.append("g")
+  // X-axis (totals)
+  g.append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x));
+
+  // X-axis label
+  g.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height + 40)
+    .text("Total Completions");
 }
 
 function drawScene2(data) {
-  // Placeholder: implement the second scene's visualization using data
   d3.select("#chart").selectAll("*").remove();
   d3.select("#chart").append("text")
     .attr("x", 20).attr("y", 50)
@@ -77,7 +104,6 @@ function drawScene2(data) {
 }
 
 function drawScene3(data) {
-  // Placeholder: implement the third scene's visualization using data
   d3.select("#chart").selectAll("*").remove();
   d3.select("#chart").append("text")
     .attr("x", 20).attr("y", 50)
@@ -85,7 +111,6 @@ function drawScene3(data) {
 }
 
 function drawScene4(data) {
-  // Placeholder: implement the fourth scene's visualization using data
   d3.select("#chart").selectAll("*").remove();
   d3.select("#chart").append("text")
     .attr("x", 20).attr("y", 50)
