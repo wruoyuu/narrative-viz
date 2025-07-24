@@ -39,13 +39,13 @@ async function loadData() {
   try {
     // Load completion data (revised files preferred)
     const completionFiles = [
-      'data/c2017_b_rv.csv',
-      'data/c2018_b_rv.csv',
-      'data/c2019_b_rv.csv',
-      'data/c2020_b_rv.csv',
-      'data/c2021_b_rv.csv',
-      'data/c2022_b_rv.csv',
-      'data/c2023_b.csv'
+      'college_data/c2017_b_rv.csv',
+      'college_data/c2018_b_rv.csv',
+      'college_data/c2019_b_rv.csv',
+      'college_data/c2020_b_rv.csv',
+      'college_data/c2021_b_rv.csv',
+      'college_data/c2022_b_rv.csv',
+      'college_data/c2023_b.csv'
     ];
     
     state.completionData = await Promise.all(
@@ -54,13 +54,13 @@ async function loadData() {
 
     // Load enrollment data
     const enrollmentFiles = [
-      'data/ef2017a_rv.csv',
-      'data/ef2018a_rv.csv',
-      'data/ef2019a_rv.csv',
-      'data/ef2020a_rv.csv',
-      'data/ef2021a_rv.csv',
-      'data/ef2022a_rv.csv',
-      'data/ef2023a.csv'
+      'college_data/ef2017a_rv.csv',
+      'college_data/ef2018a_rv.csv',
+      'college_data/ef2019a_rv.csv',
+      'college_data/ef2020a_rv.csv',
+      'college_data/ef2021a_rv.csv',
+      'college_data/ef2022a_rv.csv',
+      'college_data/ef2023a.csv'
     ];
     
     state.enrollmentData = await Promise.all(
