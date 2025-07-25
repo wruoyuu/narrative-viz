@@ -214,6 +214,26 @@ function showScene2() {
     .attr("y", radius + 40)
     .attr("text-anchor", "middle")
     .text(d => `${d["Number of votes"]} votes`);
+
+    const tooltip = d3.select("#tooltip");
+
+  nodes.on("mouseover", function (event, d) {
+    tooltip
+      .style("display", "block")
+      .html(`
+        <strong>${d.name}</strong><br>
+        Type: ${d.type1}${d.type2 ? " / " + d.type2 : ""}
+      `);
+  })
+  .on("mousemove", function (event) {
+    tooltip
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 28) + "px");
+  })
+  .on("mouseout", function () {
+    tooltip.style("display", "none");
+  });
+
 }
 
 
