@@ -2,49 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pokémon Popularity Narrative</title>
+  <title>Pokémon Narrative Visualization</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .scene {
-      margin: 20px;
-    }
-    svg {
-      display: block;
-      margin: auto;
-      background-color: #f9f9f9;
-    }
-    .annotation {
-      font-size: 12px;
-      fill: black;
-    }
-    .nav-buttons {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .nav-buttons button {
-      padding: 10px 15px;
-      margin: 5px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Pokémon Popularity Narrative</h1>
-  <h2>Drill-Down Story: From Overview to Individual Standouts</h2>
-  <div class="nav-buttons">
+  <div id="controls">
     <button onclick="showScene(0)">Scene 1: Popularity vs Stats</button>
     <button onclick="showScene(1)">Scene 2: Top 10 Pokémon</button>
-    <button onclick="showScene(2)">Scene 3: Type Breakdown</button>
+    <button onclick="showScene(2)">Scene 3: Type Distribution</button>
   </div>
-  <div id="visualization" class="scene"></div>
+  <div id="visualization"></div>
   <script src="script.js"></script>
 </body>
 </html>
