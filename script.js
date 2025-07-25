@@ -40,6 +40,7 @@ function showScene(sceneIndex) {
   // Hide play/pause buttons by default
   document.getElementById("play-btn").style.display = "none";
   document.getElementById("pause-btn").style.display = "none";
+  document.getElementById("restart-btn").style.display = "none";
 
   if (sceneIndex === 0) showScene1();
   else if (sceneIndex === 1) showScene2();
@@ -153,6 +154,13 @@ function showScene2() {
     .attr("text-anchor", "middle")
     .classed("scene-title", true)
     .text("Top 10 Most Popular Pokémon");
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2 + 35)
+    .attr("text-anchor", "middle")
+    .classed("scene-subtitle", true)
+    .text("Hover over each Pokémon to see their types!");
 
   // Arrowhead marker
   svg.append("defs").append("marker")
@@ -483,6 +491,7 @@ function playAnimation() {
 
   document.getElementById("play-btn").style.display = "none";
   document.getElementById("pause-btn").style.display = "inline-block";
+  document.getElementById("restart-btn").style.display = "none";
 
   animationTimer = d3.interval(() => {
     if (animationIndex >= voteDots.length) {
@@ -491,6 +500,7 @@ function playAnimation() {
 
       document.getElementById("play-btn").style.display = "inline-block";
       document.getElementById("pause-btn").style.display = "none";
+      document.getElementById("restart-btn").style.display = "inline-block";
       return;
     }
 
@@ -551,6 +561,7 @@ function pauseAnimation() {
 
   document.getElementById("play-btn").style.display = "inline-block";
   document.getElementById("pause-btn").style.display = "none";
+  document.getElementById("restart-btn").style.display = "inline-block";
 }
 
 function restartAnimation() {
@@ -588,4 +599,5 @@ function restartAnimation() {
   // Update buttons: show Play, hide Pause
   document.getElementById("play-btn").style.display = "inline-block";
   document.getElementById("pause-btn").style.display = "none";
+  document.getElementById("restart-btn").style.display = "inline-block";
 }
