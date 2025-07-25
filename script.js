@@ -35,6 +35,7 @@ const svg = d3.select("#visualization")
 
 function showScene(sceneIndex) {
   currentScene = sceneIndex;
+  localStorage.setItem("lastScene", currentScene);
   svg.selectAll("*").remove();
 
   // Hide play/pause buttons by default
@@ -62,7 +63,10 @@ d3.csv("filtered_merged_pokemon.csv").then(csv => {
     d.sp_defense = +d.sp_defense;
   });
   data = csv;
-  showScene(0);
+  // showScene(0);
+  // Get the last scene from localStorage, or default to 0
+  const savedScene = +localStorage.getItem("lastScene");
+  showScene(!isNaN(savedScene) ? savedScene : 0);
 });
 
 let currentAttrIndex = 0;
@@ -415,19 +419,17 @@ function showScene3() {
 
   svg.append("text")
     .attr("x", 20)
-    .attr("y", 50)
+    .attr("y", 60)
     .attr("text-anchor", "start")
-    .attr("font-size", "16px")
-    .attr("font-weight", "bold")
-    .text("Each Dot = One Pokémon");
+    .classed("scene-subtitle2", true)
+    .text("One Dot = One Pokémon");
 
   svg.append("text")
     .attr("x", barX + barMargin.left)
-    .attr("y", 50)
+    .attr("y", 60)
     .attr("text-anchor", "start")
-    .attr("font-size", "16px")
-    .attr("font-weight", "bold")
-    .text("Bar Chart = Total Votes by Type");
+    .classed("scene-subtitle2", true)
+    .text("Total Votes by Pokémon Type");
 
   // Draw gray dots
   dots = svg.append("g")
