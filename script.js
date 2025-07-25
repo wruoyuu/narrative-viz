@@ -113,62 +113,109 @@ function showScene1() {
     .text(d => d.name);
 }
 
+// Scene 2: Top Ten Pokemon Flow Chart
 function showScene2() {
-  const top10 = data.sort((a, b) => b["Number of votes"] - a["Number of votes"]).slice(0, 10);
-  const x = d3.scaleBand()
-    .domain(top10.map(d => d.name))
-    .range([margin.left, width - margin.right])
-    .padding(0.1);
+  svg.selectAll("*").remove();
 
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(top10, d => d["Number of votes"])])
-    .range([height - margin.bottom, margin.top]);
+  const pokeIdByName = {
+    "Bulbasaur": 1,
+    "Arcanine": 59,
+    "Blaziken": 257,
+    "Charizard": 6,
+    "Gengar": 94,
+    "Lucario": 448,
+    "Umbreon": 197,
+    "Sylveon": 700,
+    "Pikachu": 25,
+    "Eevee": 133,
+    "Gardevoir": 282,
+    "Dragonite": 149
+  };
 
-  svg.append("g")
-    .attr("transform", `translate(0, ${height - margin.bottom})`)
-    .call(d3.axisBottom(x))
-    .selectAll("text")
-    .attr("transform", "rotate(-45)")
-    .style("text-anchor", "end");
+  const top10 = data
+    .sort((a, b) => b["Number of votes"] - a["Number of votes"])
+    .slice(0, 10);
 
-  svg.append("g")
-    .attr("transform", `translate(${margin.left}, 0)`)
-    .call(d3.axisLeft(y));
+  top10.forEach(d => {
+    const id = pokeIdByName[d.name];
+    d.imageURL = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+  });
+
+  const availableWidth = width - margin.left - margin.right;
+  const spacing = availableWidth / (top10.length - 1);
+  const radius = Math.min(45, spacing / 2 - 10);
+  const startX = margin.left;
+  const centerY = height / 2 - 70;
 
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
     .classed("scene-title", true)
-    .text("Scene 2: Top 10 Most Popular Pokémon");
+    .text("Top 10 Most Popular Pokémon");
 
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height - margin.bottom + 80)
-    .attr("text-anchor", "middle")
-    .classed("axis-label", true)
-    .text("Pokémon");
+  // Arrowhead marker
+  svg.append("defs").append("marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 10)
+    .attr("refY", 0)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M0,-5L10,0L0,5")
+    .attr("fill", "#666");
 
-  svg.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -height / 2)
-    .attr("y", margin.left - 60)
-    .attr("text-anchor", "middle")
-    .classed("axis-label", true)
-    .text("Number of Popularity Votes");
+  const positions = top10.map((d, i) => ({
+    x: startX + i * spacing,
+    y: centerY
+  }));
 
-  svg.selectAll("rect")
+  // Draw arrows between nodes
+  for (let i = 0; i < top10.length - 1; i++) {
+    svg.append("line")
+      .attr("x1", positions[i].x + radius)
+      .attr("y1", positions[i].y)
+      .attr("x2", positions[i + 1].x - radius)
+      .attr("y2", positions[i + 1].y)
+      .attr("stroke", "#666")
+      .attr("stroke-width", 2)
+      .attr("marker-end", "url(#arrowhead)");
+  }
+
+  const nodes = svg.selectAll("g.node")
     .data(top10)
     .enter()
-    .append("rect")
-    .attr("x", d => x(d.name))
-    .attr("y", d => y(d["Number of votes"]))
-    .attr("width", x.bandwidth())
-    .attr("height", d => height - margin.bottom - y(d["Number of votes"]))
-    .attr("fill", "orange")
-    .append("title")
-    .text(d => `${d.name}: ${d["Number of votes"]} votes`);
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", (d, i) => `translate(${positions[i].x}, ${positions[i].y})`);
+
+  nodes.append("circle")
+    .attr("r", radius)
+    .attr("fill", "#ffd966")
+    .attr("stroke", "#b38600")
+    .attr("stroke-width", 3);
+
+  nodes.append("image")
+    .attr("xlink:href", d => d.imageURL)
+    .attr("x", -radius * 0.7)
+    .attr("y", -radius * 0.7)
+    .attr("width", radius * 1.4)
+    .attr("height", radius * 1.4);
+
+  nodes.append("text")
+    .attr("y", radius + 20)
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text(d => d.name);
+
+  nodes.append("text")
+    .attr("y", radius + 40)
+    .attr("text-anchor", "middle")
+    .text(d => `${d["Number of votes"]} votes`);
 }
+
 
 function showScene3() {
   const typeCounts = d3.rollup(data, v => v.length, d => d.type1);
@@ -338,11 +385,10 @@ function showScene4() {
   // Titles
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", 30)
+    .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
-    .attr("font-size", "20px")
-    .attr("font-weight", "bold")
-    .text("Scene 4: Pokémon Type Visualization");
+    .classed("scene-title", true)
+    .text("Pokémon Type Visualization");
 
   svg.append("text")
     .attr("x", 20)
