@@ -76,6 +76,17 @@ function showScene1() {
 function renderAttributeSlide(attr) {
   svg.selectAll("*").remove(); // Clear previous chart
 
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .classed("scene-title", true)
+    .text(`Popularity vs Base Stat`);
+
+  // Create a group to hold the chart elements and shift it down
+  const chartGroup = svg.append("g")
+    .attr("transform", "translate(0, 40)");
+
   const x = d3.scaleLinear()
     .domain(d3.extent(data, d => d[attr]))
     .range([margin.left, width - margin.right]);
@@ -84,24 +95,24 @@ function renderAttributeSlide(attr) {
     .domain(d3.extent(data, d => d["Number of votes"]))
     .range([height - margin.bottom, margin.top]);
 
-  svg.append("g")
+  chartGroup.append("g")
     .attr("transform", `translate(0, ${height - margin.bottom})`)
     .call(d3.axisBottom(x));
 
-  svg.append("g")
+  chartGroup.append("g")
     .attr("transform", `translate(${margin.left}, 0)`)
     .call(d3.axisLeft(y));
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", margin.top / 2)
+    .attr("y", margin.top / 2 + 35)
     .attr("text-anchor", "middle")
-    .classed("scene-title", true)
+    .classed("scene-subtitle", true)
     .text(`Popularity vs ${formatAttributeName(attr)}`);
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom + 60)
+    .attr("y", height - margin.bottom + 95)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text(`${formatAttributeName(attr)}`);
@@ -114,12 +125,12 @@ function renderAttributeSlide(attr) {
     .classed("axis-label", true)
     .text("Number of Popularity Votes");
 
-  svg.selectAll("circle")
+  chartGroup.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
     .attr("cx", d => x(d[attr]))
-    .attr("cy", d => y(d["Number of votes"]))
+    .attr("cy", d => y(d["Number of votes"])) 
     .attr("r", 4)
     .attr("fill", "steelblue")
     .append("title")
@@ -128,7 +139,7 @@ function renderAttributeSlide(attr) {
   // Add "Next" button
   svg.append("text")
     .attr("x", width - margin.right)
-    .attr("y", height - 20)
+    .attr("y", height)
     .attr("text-anchor", "end")
     .style("cursor", "pointer")
     .style("fill", "blue")
@@ -141,7 +152,7 @@ function renderAttributeSlide(attr) {
   // Add "Previous" button
   svg.append("text")
     .attr("x", margin.left)
-    .attr("y", height - 20)
+    .attr("y", height)
     .attr("text-anchor", "start") 
     .style("cursor", "pointer")
     .style("fill", "blue")
