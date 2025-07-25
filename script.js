@@ -374,6 +374,28 @@ function showScene4() {
     .attr("height", dotSize)
     .attr("fill", "#ccc");
 
+  // Add the popular type and total votes text below the dots
+  const dotsHeight = Math.ceil(voteDots.length / columns) * dotSpacing;
+  const popularTypeTextY = 110 + dotsHeight + 30;  // dots group y (70 + 40 margin) + dots height + 30 px gap
+  const totalVotesTextY = popularTypeTextY + 30;
+
+  // Remove previous text if any
+  svg.selectAll("text.popular-type-text, text.total-votes-text").remove();
+
+  svg.append("text")
+    .attr("class", "popular-type-text")
+    .attr("x", 20)
+    .attr("y", popularTypeTextY)
+    .attr("text-anchor", "left")
+    .text("Most Popular Type: None (0%)");
+
+  svg.append("text")
+    .attr("class", "total-votes-text")
+    .attr("x", 20)
+    .attr("y", totalVotesTextY)
+    .attr("text-anchor", "left")
+    .text("Total Votes: 0");
+
   animationIndex = 0;
 
   document.getElementById("play-btn").style.display = "inline-block";
@@ -428,6 +450,27 @@ function playAnimation() {
       .duration(300)
       .attr("x", d => barScaleX(typeCounts[d]) + 15)
       .text(d => typeCounts[d]);
+
+    // Calculate total votes so far
+    const totalVotes = Object.values(typeCounts).reduce((a, b) => a + b, 0);
+
+    // Find most popular type and percentage
+    let maxType = "None";
+    let maxCount = 0;
+    for (const t of types) {
+      if (typeCounts[t] > maxCount) {
+        maxCount = typeCounts[t];
+        maxType = t;
+      }
+    }
+    const percent = totalVotes > 0 ? ((maxCount / totalVotes) * 100).toFixed(1) : 0;
+
+    // Update popular type and total votes text
+    svg.select("text.popular-type-text")
+      .text(`Most Popular Type: ${maxType} (${percent}%)`);
+
+    svg.select("text.total-votes-text")
+      .text(`Total Votes: ${totalVotes}`);
 
     animationIndex++;
   }, 50);

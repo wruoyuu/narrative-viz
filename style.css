@@ -51,3 +51,15 @@ button:hover {
   font-family: sans-serif;
   color: #222;
 }
+
+.popular-type-text {
+  font-size: 28px;
+  font-weight: bold;
+  fill: #111;
+}
+
+.total-votes-text {
+  font-size: 24px;
+  font-weight: bold;
+  fill: #111;
+}
