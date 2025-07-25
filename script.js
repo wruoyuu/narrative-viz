@@ -56,7 +56,7 @@ function showScene1() {
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom / 3 + 20)
+    .attr("y", height - margin.bottom / 3)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text("Total Base Stats (sum of HP, Attack, Defense, etc)");
