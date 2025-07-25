@@ -51,19 +51,22 @@ function showScene1() {
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
+    .classed("scene-title", true)
     .text("Scene 1: Popularity vs Total Base Stats");
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom / 2)
+    .attr("y", height - margin.bottom / 3 + 20)
     .attr("text-anchor", "middle")
+    .classed("axis-label", true)
     .text("Total Base Stats (sum of HP, Attack, Defense, etc)");
 
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", 20)
+    .attr("y", 40)
     .attr("text-anchor", "middle")
+    .classed("axis-label", true)
     .text("Number of Popularity Votes");
 
   svg.selectAll("circle")
@@ -104,19 +107,22 @@ function showScene2() {
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
+    .classed("scene-title", true)
     .text("Scene 2: Top 10 Most Popular Pokémon");
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - 10)
+    .attr("y", height - margin.bottom / 3 + 20)
     .attr("text-anchor", "middle")
+    .classed("axis-label", true)
     .text("Pokémon");
 
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", 20)
+    .attr("y", 40)
     .attr("text-anchor", "middle")
+    .classed("axis-label", true)
     .text("Number of Popularity Votes");
 
   svg.selectAll("rect")
@@ -160,19 +166,22 @@ function showScene3() {
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
+    .classed("scene-title", true)
     .text("Scene 3: Distribution of Primary Pokémon Types");
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - 10)
+    .attr("y", height - margin.bottom / 3 + 20)
     .attr("text-anchor", "middle")
+    .classed("axis-label", true)
     .text("Primary Type");
 
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", 20)
+    .attr("y", 40)
     .attr("text-anchor", "middle")
+    .classed("axis-label", true)
     .text("Number of Pokémon");
 
   svg.selectAll("rect")
