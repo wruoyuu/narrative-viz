@@ -44,9 +44,8 @@ function showScene(sceneIndex) {
 
   if (sceneIndex === 0) showScene1();
   else if (sceneIndex === 1) showScene2();
-  else if (sceneIndex === 2) showScene3();
-  else if (sceneIndex === 3) {
-    showScene4();
+  else if (sceneIndex === 2) {
+    showScene3();
     // animation does NOT start automatically
   }
 }
@@ -244,68 +243,8 @@ function showScene2() {
 
 }
 
-
+// Scene 3: FlowingData-style animation in D3 where each dot represents a Pokémon and bars grow by votes
 function showScene3() {
-  const typeCounts = d3.rollup(data, v => v.length, d => d.type1);
-  const types = Array.from(typeCounts, ([type, count]) => ({ type, count }));
-
-  const x = d3.scaleBand()
-    .domain(types.map(d => d.type))
-    .range([margin.left, width - margin.right])
-    .padding(0.1);
-
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(types, d => d.count)])
-    .range([height - margin.bottom, margin.top]);
-
-  svg.append("g")
-    .attr("transform", `translate(0, ${height - margin.bottom})`)
-    .call(d3.axisBottom(x))
-    .selectAll("text")
-    .attr("transform", "rotate(-45)")
-    .style("text-anchor", "end");
-
-  svg.append("g")
-    .attr("transform", `translate(${margin.left}, 0)`)
-    .call(d3.axisLeft(y));
-
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2)
-    .attr("text-anchor", "middle")
-    .classed("scene-title", true)
-    .text("Scene 3: Distribution of Primary Pokémon Types");
-
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height - margin.bottom + 80)
-    .attr("text-anchor", "middle")
-    .classed("axis-label", true)
-    .text("Primary Type");
-
-  svg.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -height / 2)
-    .attr("y", margin.left - 60)
-    .attr("text-anchor", "middle")
-    .classed("axis-label", true)
-    .text("Number of Pokémon");
-
-  svg.selectAll("rect")
-    .data(types)
-    .enter()
-    .append("rect")
-    .attr("x", d => x(d.type))
-    .attr("y", d => y(d.count))
-    .attr("width", x.bandwidth())
-    .attr("height", d => height - margin.bottom - y(d.count))
-    .attr("fill", "mediumseagreen")
-    .append("title")
-    .text(d => `${d.type}: ${d.count}`);
-}
-
-// Scene 4: FlowingData-style animation in D3 where each dot represents a Pokémon and bars grow by votes
-function showScene4() {
   if (animationTimer) {
     animationTimer.stop();
     animationTimer = null;
@@ -482,7 +421,7 @@ function playAnimation() {
 
   // If finished, restart from beginning
   if (animationIndex >= voteDots.length) {
-    showScene4();  // Reset the scene
+    showScene3();  // Reset the scene
     setTimeout(() => {
       playAnimation();  // Restart after re-initializing
     }, 100);  // Small delay to ensure DOM updates
