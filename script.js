@@ -383,6 +383,15 @@ function showScene4() {
 function playAnimation() {
   if (animationTimer) return;
 
+  // If finished, restart from beginning
+  if (animationIndex >= voteDots.length) {
+    showScene4();  // Reset the scene
+    setTimeout(() => {
+      playAnimation();  // Restart after re-initializing
+    }, 100);  // Small delay to ensure DOM updates
+    return;
+  }
+
   document.getElementById("play-btn").style.display = "none";
   document.getElementById("pause-btn").style.display = "inline-block";
 
@@ -390,6 +399,7 @@ function playAnimation() {
     if (animationIndex >= voteDots.length) {
       animationTimer.stop();
       animationTimer = null;
+
       document.getElementById("play-btn").style.display = "inline-block";
       document.getElementById("pause-btn").style.display = "none";
       return;
@@ -402,7 +412,6 @@ function playAnimation() {
       .attr("fill", typeColors(dot.type));
 
     typeCounts[dot.type] += dot.votes;
-
     barScaleX.domain([0, d3.max(Object.values(typeCounts))]);
 
     const barsGroup = svg.select("g.bars");
