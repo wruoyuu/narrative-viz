@@ -57,7 +57,7 @@ function showScene1() {
     .attr("x", width / 2)
     .attr("y", height - 10)
     .attr("text-anchor", "middle")
-    .text("Total Base Stats");
+    .text("Total Base Stats (sum of HP, Attack, Defense, etc)");
 
   svg.append("text")
     .attr("transform", "rotate(-90)")
