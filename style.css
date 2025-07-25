@@ -11,11 +11,19 @@ svg text {
 }
 
 .scene-title {
+  font-size: 36px;
+  font-weight: bold;
+  text-anchor: middle;
+  fill: #111;
+}
+
+.scene-subtitle {
   font-size: 20px;
   font-weight: bold;
   text-anchor: middle;
   fill: #111;
 }
+
 
 button {
   margin: 10px;
@@ -50,4 +58,22 @@ button:hover {
   margin-bottom: 10px;
   font-family: sans-serif;
   color: #222;
+}
+
+.popular-type-text {
+  font-size: 28px;
+  font-weight: bold;
+  fill: #111;
+}
+
+.total-votes-text {
+  font-size: 24px;
+  font-weight: bold;
+  fill: #111;
+}
+
+#tooltip {
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 200px;
+  z-index: 10;
 }
