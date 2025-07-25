@@ -1,82 +1,43 @@
-/* body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 10px 20px;
-  background-color: #f9f9f9;
-  color: #333;
-}
-
-#header {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-#navigation {
-  text-align: center;
-  margin: 10px 0;
-}
-
-.nav-btn {
-  background-color: #5b9bd5;
-  border: none;
-  color: white;
-  padding: 8px 15px;
-  margin: 0 10px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px;
-  user-select: none;
-}
-
-.nav-btn:disabled {
-  background-color: #bbb;
-  cursor: not-allowed;
-}
-
-#filters {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.filter-dropdown {
-  padding: 5px 10px;
+svg text {
+  font-family: sans-serif;
   font-size: 14px;
-  margin: 0 10px;
+  fill: #333;
 }
 
-#chart-container {
+.axis-label {
+  font-size: 16px;
+  font-weight: bold;
+  fill: #222;
+}
+
+.scene-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-anchor: middle;
+  fill: #111;
+}
+
+button {
+  margin: 10px;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#visualization {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 520px;
-  position: relative;
 }
-
-#chart {
-  background-color: white;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-}
-
-#loading {
-  font-size: 18px;
-  color: #666;
-  position: absolute;
-}
-
-#tooltip {
-  position: absolute;
-  background: #333;
-  color: #fff;
-  padding: 5px 8px;
-  border-radius: 3px;
-  font-size: 12px;
-  pointer-events: none;
-  opacity: 0.8;
-}
-
-#footer {
-  text-align: center;
-  margin-top: 25px;
-  font-size: 13px;
-  color: #777;
-} */
