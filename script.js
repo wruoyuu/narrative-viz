@@ -51,7 +51,20 @@ function showScene1() {
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
-    .text("Popularity vs Total Stats");
+    .text("Scene 1: Popularity vs Total Base Stats");
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height - 10)
+    .attr("text-anchor", "middle")
+    .text("Total Base Stats");
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .text("Number of Popularity Votes");
 
   svg.selectAll("circle")
     .data(data)
@@ -91,7 +104,20 @@ function showScene2() {
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
-    .text("Top 10 Most Popular Pokémon");
+    .text("Scene 2: Top 10 Most Popular Pokémon");
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height - 10)
+    .attr("text-anchor", "middle")
+    .text("Pokémon");
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .text("Number of Popularity Votes");
 
   svg.selectAll("rect")
     .data(top10)
@@ -134,7 +160,20 @@ function showScene3() {
     .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
-    .text("Distribution of Primary Pokémon Types");
+    .text("Scene 3: Distribution of Primary Pokémon Types");
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height - 10)
+    .attr("text-anchor", "middle")
+    .text("Primary Type");
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .text("Number of Pokémon");
 
   svg.selectAll("rect")
     .data(types)
