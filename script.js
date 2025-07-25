@@ -1,6 +1,6 @@
 const width = 900;
-const height = 600;
-const margin = { top: 50, right: 30, bottom: 60, left: 60 };
+const height = 450;
+const margin = { top: 60, right: 50, bottom: 100, left: 80 };
 
 let currentScene = 0;
 let data;
@@ -56,7 +56,7 @@ function showScene1() {
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom / 3)
+    .attr("y", height - margin.bottom + 80)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text("Total Base Stats (sum of HP, Attack, Defense, etc)");
@@ -64,7 +64,7 @@ function showScene1() {
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", 40)
+    .attr("y", margin.left - 60)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text("Number of Popularity Votes");
@@ -112,7 +112,7 @@ function showScene2() {
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom / 3 + 20)
+    .attr("y", height - margin.bottom + 80)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text("Pokémon");
@@ -120,7 +120,7 @@ function showScene2() {
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", 40)
+    .attr("y", margin.left - 60)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text("Number of Popularity Votes");
@@ -171,7 +171,7 @@ function showScene3() {
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom / 3 + 20)
+    .attr("y", height - margin.bottom + 80)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text("Primary Type");
@@ -179,7 +179,7 @@ function showScene3() {
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", 40)
+    .attr("y", margin.left - 60)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text("Number of Pokémon");
