@@ -1,53 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>COVID-19 & College Outcomes</title>
-
-  <!-- D3 + D3-annotation + styles -->
+  <meta charset="UTF-8">
+  <title>Pokémon Popularity Narrative</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3-svg-annotation@2.5.1/d3-annotation.min.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .scene {
+      margin: 20px;
+    }
+    svg {
+      display: block;
+      margin: auto;
+      background-color: #f9f9f9;
+    }
+    .annotation {
+      font-size: 12px;
+      fill: black;
+    }
+    .nav-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .nav-buttons button {
+      padding: 10px 15px;
+      margin: 5px;
+    }
+  </style>
 </head>
 <body>
-  <div id="header">
-    <h1>How COVID-19 Reshaped College Completion</h1>
-    <p>An analysis of IPEDS data (2017–2023)</p>
+  <h1>Pokémon Popularity Narrative</h1>
+  <h2>Drill-Down Story: From Overview to Individual Standouts</h2>
+  <div class="nav-buttons">
+    <button onclick="showScene(0)">Scene 1: Popularity vs Stats</button>
+    <button onclick="showScene(1)">Scene 2: Top 10 Pokémon</button>
+    <button onclick="showScene(2)">Scene 3: Type Breakdown</button>
   </div>
-
-  <div id="navigation">
-    <button id="prevBtn" class="nav-btn">← Previous</button>
-    <span id="scene-indicator">Scene 1 of 4</span>
-    <button id="nextBtn" class="nav-btn">Next →</button>
-  </div>
-
-  <div id="filters">
-    <select id="institution-type" class="filter-dropdown">
-      <option value="all">All Institutions</option>
-      <option value="public">Public Only</option>
-      <option value="private">Private Only</option>
-    </select>
-    <select id="demographic" class="filter-dropdown">
-      <option value="all">All Students</option>
-      <option value="black">Black Students</option>
-      <option value="hispanic">Hispanic Students</option>
-      <option value="white">White Students</option>
-      <option value="asian">Asian Students</option>
-      <option value="native">American Indian or Alaska Native Students</option>
-    </select>
-  </div>
-
-  <div id="chart-container">
-    <div id="loading">Loading data…</div>
-    <svg id="chart"></svg>
-    <div id="tooltip" style="display:none;"></div>
-  </div>
-
-  <div id="footer">
-    <p>Data: IPEDS Completion & Enrollment Surveys (2017–2023)</p>
-  </div>
-
+  <div id="visualization" class="scene"></div>
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,181 +1,150 @@
-// Global state
+const width = 900;
+const height = 600;
+const margin = { top: 50, right: 30, bottom: 60, left: 60 };
+
 let currentScene = 0;
-const totalScenes = 4;
-let allData = null;
+let data;
 
-let currentInstitutionType = "all";
-let currentDemographic = "all";
+const svg = d3.select("#visualization")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
 
-const margin = { top: 20, right: 20, bottom: 50, left: 150 };
-const width = 800 - margin.left - margin.right;
-const height = 500 - margin.top - margin.bottom;
-
-// Load CSV once and store globally
-d3.csv("college_data/c2017_b_rv.csv", d => {
-  // Convert numeric columns to numbers
-  return {
-    ...d,
-    CONTROL: +d.CONTROL,
-    CSBKAAT: +d.CSBKAAT,
-    CSHISPT: +d.CSHISPT,
-    CSWHITT: +d.CSWHITT,
-    CSASIAW: +d.CSASIAW,
-    CSAIANT: +d.CSAIANT
-  };
-}).then(data => {
-  allData = data;
-  d3.select("#loading").style("display", "none");
-  console.log("CSV loaded:", data.slice(0, 5));
-  updateScene(); // Initial draw
-}).catch(err => {
-  console.error("Data load error:", err);
-  d3.select("#loading").text("Failed to load data.");
-});
-
-// Dropdown filter listeners
-d3.select("#institution-type").on("change", function () {
-  currentInstitutionType = this.value;
-  updateScene();
-});
-
-d3.select("#demographic").on("change", function () {
-  currentDemographic = this.value;
-  updateScene();
-});
-
-// Filtering logic
-function filterData(data) {
-  let filtered = data;
-
-  if (currentInstitutionType === "public") {
-    filtered = filtered.filter(d => d.CONTROL === 1);
-  } else if (currentInstitutionType === "private") {
-    filtered = filtered.filter(d => d.CONTROL === 2 || d.CONTROL === 3);
-  }
-
-  return filtered;
+function showScene(sceneIndex) {
+  currentScene = sceneIndex;
+  svg.selectAll("*").remove();
+  if (sceneIndex === 0) showScene1();
+  else if (sceneIndex === 1) showScene2();
+  else if (sceneIndex === 2) showScene3();
 }
 
-// Scene 1: Bar chart by demographic
-function drawScene1(data) {
-  const svg = d3.select("#chart")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
-
-  svg.selectAll("*").remove();
-
-  const g = svg.append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
-
-  const allRaceKeys = [
-    "CSBKAAT", // Black
-    "CSHISPT", // Hispanic
-    "CSWHITT", // White
-    "CSASIAW", // Asian
-    "CSAIANT"  // Native American
-  ];
-
-  const raceLabels = {
-    CSBKAAT: "Black or African American",
-    CSHISPT: "Hispanic/Latino",
-    CSWHITT: "White",
-    CSASIAW: "Asian",
-    CSAIANT: "American Indian or Alaska Native"
-  };
-
-  let raceKeysToShow;
-  switch (currentDemographic) {
-    case "black": raceKeysToShow = ["CSBKAAT"]; break;
-    case "hispanic": raceKeysToShow = ["CSHISPT"]; break;
-    case "white": raceKeysToShow = ["CSWHITT"]; break;
-    case "asian": raceKeysToShow = ["CSASIAW"]; break;
-    case "native": raceKeysToShow = ["CSAIANT"]; break;
-    default: raceKeysToShow = allRaceKeys; break;
-  }
-
-  const completionData = raceKeysToShow.map(col => {
-    const total = d3.sum(data, d => d[col] || 0);
-    return { race: raceLabels[col], total };
+d3.csv("filtered_merged_pokemon.csv").then(csv => {
+  csv.forEach(d => {
+    d.total = +d.total;
+    d["Number of votes"] = +d["Number of votes"];
+    d.attack = +d.attack;
+    d.defense = +d.defense;
+    d.hp = +d.hp;
   });
+  data = csv;
+  showScene(0);
+});
 
-  const maxTotal = d3.max(completionData, d => d.total);
-  const x = d3.scaleLinear().domain([0, maxTotal]).range([0, width]);
-  const y = d3.scaleBand()
-    .domain(completionData.map(d => d.race))
-    .range([0, height])
-    .padding(0.2);
+function showScene1() {
+  const x = d3.scaleLinear()
+    .domain(d3.extent(data, d => d.total))
+    .range([margin.left, width - margin.right]);
 
-  // Bars
-  g.selectAll(".bar")
-    .data(completionData)
-    .enter()
-    .append("rect")
-    .attr("class", "bar")
-    .attr("y", d => y(d.race))
-    .attr("width", d => x(d.total))
-    .attr("height", y.bandwidth())
-    .attr("fill", "#5b9bd5");
+  const y = d3.scaleLinear()
+    .domain(d3.extent(data, d => d["Number of votes"]))
+    .range([height - margin.bottom, margin.top]);
 
-  // Axes
-  g.append("g").call(d3.axisLeft(y));
-  g.append("g")
-    .attr("transform", `translate(0,${height})`)
+  svg.append("g")
+    .attr("transform", `translate(0, ${height - margin.bottom})`)
     .call(d3.axisBottom(x));
 
-  // Label
-  g.append("text")
-    .attr("text-anchor", "end")
-    .attr("x", width)
-    .attr("y", height + 40)
-    .text("Total Completions");
+  svg.append("g")
+    .attr("transform", `translate(${margin.left}, 0)`)
+    .call(d3.axisLeft(y));
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .text("Popularity vs Total Stats");
+
+  svg.selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", d => x(d.total))
+    .attr("cy", d => y(d["Number of votes"]))
+    .attr("r", 4)
+    .attr("fill", "steelblue")
+    .append("title")
+    .text(d => d.name);
 }
 
-// Placeholder scenes
-function drawScene2(data) {
-  d3.select("#chart").selectAll("*").remove();
-  d3.select("#chart").append("text")
-    .attr("x", 20).attr("y", 50)
-    .text("Scene 2 - To be implemented");
+function showScene2() {
+  const top10 = data.sort((a, b) => b["Number of votes"] - a["Number of votes"]).slice(0, 10);
+  const x = d3.scaleBand()
+    .domain(top10.map(d => d.name))
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(top10, d => d["Number of votes"])])
+    .range([height - margin.bottom, margin.top]);
+
+  svg.append("g")
+    .attr("transform", `translate(0, ${height - margin.bottom})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("transform", "rotate(-45)")
+    .style("text-anchor", "end");
+
+  svg.append("g")
+    .attr("transform", `translate(${margin.left}, 0)`)
+    .call(d3.axisLeft(y));
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .text("Top 10 Most Popular Pokémon");
+
+  svg.selectAll("rect")
+    .data(top10)
+    .enter()
+    .append("rect")
+    .attr("x", d => x(d.name))
+    .attr("y", d => y(d["Number of votes"]))
+    .attr("width", x.bandwidth())
+    .attr("height", d => height - margin.bottom - y(d["Number of votes"]))
+    .attr("fill", "orange")
+    .append("title")
+    .text(d => `${d.name}: ${d["Number of votes"]} votes`);
 }
-function drawScene3(data) {
-  d3.select("#chart").selectAll("*").remove();
-  d3.select("#chart").append("text")
-    .attr("x", 20).attr("y", 50)
-    .text("Scene 3 - To be implemented");
+
+function showScene3() {
+  const typeCounts = d3.rollup(data, v => v.length, d => d.type1);
+  const types = Array.from(typeCounts, ([type, count]) => ({ type, count }));
+
+  const x = d3.scaleBand()
+    .domain(types.map(d => d.type))
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(types, d => d.count)])
+    .range([height - margin.bottom, margin.top]);
+
+  svg.append("g")
+    .attr("transform", `translate(0, ${height - margin.bottom})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("transform", "rotate(-45)")
+    .style("text-anchor", "end");
+
+  svg.append("g")
+    .attr("transform", `translate(${margin.left}, 0)`)
+    .call(d3.axisLeft(y));
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .text("Distribution of Primary Pokémon Types");
+
+  svg.selectAll("rect")
+    .data(types)
+    .enter()
+    .append("rect")
+    .attr("x", d => x(d.type))
+    .attr("y", d => y(d.count))
+    .attr("width", x.bandwidth())
+    .attr("height", d => height - margin.bottom - y(d.count))
+    .attr("fill", "mediumseagreen")
+    .append("title")
+    .text(d => `${d.type}: ${d.count}`);
 }
-function drawScene4(data) {
-  d3.select("#chart").selectAll("*").remove();
-  d3.select("#chart").append("text")
-    .attr("x", 20).attr("y", 50)
-    .text("Scene 4 - To be implemented");
-}
-
-// Scene switcher
-function updateScene() {
-  d3.select("#scene-indicator").text(`Scene ${currentScene + 1} of ${totalScenes}`);
-  if (!allData) return;
-
-  const filteredData = filterData(allData);
-
-  switch (currentScene) {
-    case 0: drawScene1(filteredData); break;
-    case 1: drawScene2(filteredData); break;
-    case 2: drawScene3(filteredData); break;
-    case 3: drawScene4(filteredData); break;
-  }
-}
-
-// Navigation
-d3.select("#prevBtn").on("click", () => {
-  if (currentScene > 0) {
-    currentScene--;
-    updateScene();
-  }
-});
-
-d3.select("#nextBtn").on("click", () => {
-  if (currentScene < totalScenes - 1) {
-    currentScene++;
-    updateScene();
-  }
-});
