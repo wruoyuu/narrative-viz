@@ -400,6 +400,7 @@ function showScene4() {
 
   document.getElementById("play-btn").style.display = "inline-block";
   document.getElementById("pause-btn").style.display = "none";
+  document.getElementById("restart-btn").style.display = "inline-block";
 }
 
 function playAnimation() {
@@ -482,6 +483,43 @@ function pauseAnimation() {
   animationTimer.stop();
   animationTimer = null;
 
+  document.getElementById("play-btn").style.display = "inline-block";
+  document.getElementById("pause-btn").style.display = "none";
+}
+
+function restartAnimation() {
+  if (animationTimer) {
+    animationTimer.stop();
+    animationTimer = null;
+  }
+  animationIndex = 0;
+
+  // Reset all dots to gray
+  dots.attr("fill", "#ccc");
+
+  // Reset counts
+  types.forEach(t => (typeCounts[t] = 0));
+
+  // Reset bars width and count labels
+  const barsGroup = svg.select("g.bars");
+  barsGroup.selectAll("rect")
+    .transition()
+    .duration(300)
+    .attr("width", 0);
+
+  barsGroup.selectAll(".count-label")
+    .transition()
+    .duration(300)
+    .attr("x", 0)
+    .text("0");
+
+  // Reset texts
+  svg.select(".popular-type-text")
+    .text("Most Popular Type: None (0%)");
+  svg.select(".total-votes-text")
+    .text("Total Votes: 0");
+
+  // Update buttons: show Play, hide Pause
   document.getElementById("play-btn").style.display = "inline-block";
   document.getElementById("pause-btn").style.display = "none";
 }
