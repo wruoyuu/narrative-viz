@@ -57,14 +57,27 @@ d3.csv("filtered_merged_pokemon.csv").then(csv => {
     d.attack = +d.attack;
     d.defense = +d.defense;
     d.hp = +d.hp;
+    d.speed = +d.speed;
+    d.sp_attack = +d.sp_attack;
+    d.sp_defense = +d.sp_defense;
   });
   data = csv;
   showScene(0);
 });
 
+let currentAttrIndex = 0;
+const statAttributes = ["total", "attack", "defense", "hp", "speed", "sp_attack", "sp_defense"];
+
+// Scene 1: Slide Show of Popularity vs Base Stats
 function showScene1() {
+  renderAttributeSlide(statAttributes[currentAttrIndex]);
+}
+
+function renderAttributeSlide(attr) {
+  svg.selectAll("*").remove(); // Clear previous chart
+
   const x = d3.scaleLinear()
-    .domain(d3.extent(data, d => d.total))
+    .domain(d3.extent(data, d => d[attr]))
     .range([margin.left, width - margin.right]);
 
   const y = d3.scaleLinear()
@@ -84,14 +97,14 @@ function showScene1() {
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
     .classed("scene-title", true)
-    .text("Scene 1: Popularity vs Total Base Stats");
+    .text(`Popularity vs ${formatAttributeName(attr)}`);
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom + 80)
+    .attr("y", height - margin.bottom + 60)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
-    .text("Total Base Stats (sum of HP, Attack, Defense, etc)");
+    .text(`${formatAttributeName(attr)}`);
 
   svg.append("text")
     .attr("transform", "rotate(-90)")
@@ -105,12 +118,44 @@ function showScene1() {
     .data(data)
     .enter()
     .append("circle")
-    .attr("cx", d => x(d.total))
+    .attr("cx", d => x(d[attr]))
     .attr("cy", d => y(d["Number of votes"]))
     .attr("r", 4)
     .attr("fill", "steelblue")
     .append("title")
     .text(d => d.name);
+
+  // Add "Next" button
+  svg.append("text")
+    .attr("x", width - margin.right)
+    .attr("y", height - 20)
+    .attr("text-anchor", "end")
+    .style("cursor", "pointer")
+    .style("fill", "blue")
+    .text("Next Attribute →")
+    .on("click", () => {
+      currentAttrIndex = (currentAttrIndex + 1) % statAttributes.length;
+      renderAttributeSlide(statAttributes[currentAttrIndex]);
+    });
+
+  // Add "Previous" button
+  svg.append("text")
+    .attr("x", margin.left)
+    .attr("y", height - 20)
+    .attr("text-anchor", "start") 
+    .style("cursor", "pointer")
+    .style("fill", "blue")
+    .text("← Previous Attribute")
+    .on("click", () => {
+      currentAttrIndex = (currentAttrIndex - 1 + statAttributes.length) % statAttributes.length; 
+      renderAttributeSlide(statAttributes[currentAttrIndex]);
+  });
+}
+
+function formatAttributeName(attr) {
+  return attr
+    .replace("_", " ")
+    .replace(/\b\w/g, l => l.toUpperCase()); // capitalize words
 }
 
 // Scene 2: Top Ten Pokemon Flow Chart
@@ -243,7 +288,7 @@ function showScene2() {
 
 }
 
-// Scene 3: FlowingData-style animation in D3 where each dot represents a Pokémon and bars grow by votes
+// Scene 3: FlowingData-style animation in D3 where each dot represents a Pokémon and bars grow by votes - Video Visual Genre
 function showScene3() {
   if (animationTimer) {
     animationTimer.stop();
