@@ -29,14 +29,14 @@ const typeColors = d3.scaleOrdinal()
   ]);
 
 const customSummaryText = `
-  <h3 style="margin:0 0 10px 0;color:#333">Fan's Top 10 Pokémon</h3>
-  <p style="margin:0 0 10px 0;color:#555">
+  <h3 class="poke-desc-title">Fan's Top 10 Pokémon</h3>
+  <p class="poke-desc-text">
     This visualization shows the top 10 most popular Pokémon based on fan votes. 
     Click on any Pokémon's image to learn more about it.
   </p>
-  <div style="color:#555">
-    <p style="margin:0 0 5px 0;">Top 10 from 1st to 10th place:</p>
-    <ol style="margin:0 0 0 20px;padding:0">
+  <div class="poke-desc-text">
+    <p class="poke-desc-text">Top 10 from 1st to 10th place:</p>
+    <ol class="poke-desc-text">
       <li>Charizard (1107 votes)</li>
       <li>Gengar (1056 votes)</li>
       <li>Arcanine (923 votes)</li>
@@ -53,133 +53,203 @@ const customSummaryText = `
 
 const pokeDescriptions = {
   "Charizard": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Charizard received 1107 total votes in the Pokémon popularity poll, ranking 1st in popularity.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Fire/Flying<br>
       <strong>Ability:</strong> Blaze<br>
       <strong>Weaknesses:</strong> Water, Electric, Rock (Rock is super effective)
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 534; HP: 78; Attack: 84; Defense: 78; Sp. Atk: 109; Sp. Def: 85; Speed: 100
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 534<br>
+      HP: 78<br>
+      Attack: 84<br>
+      Defense: 78<br>
+      Sp. Atk: 109<br>
+      Sp. Def: 85<br>
+      Speed: 100
     </p>
   `,
   "Gengar": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Gengar received 1056 total votes in the Pokémon popularity poll. Gengar ranked 2 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Ghost/Poison<br>
       <strong>Ability:</strong> Cursed Body<br>
       <strong>Weaknesses:</strong> Ground, Psychic, Ghost, and Dark
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 500; HP: 60; Attack: 65; Defense: 60; Sp. Atk: 130; Sp. Def: 75; Speed: 110
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 500<br>
+      HP: 60<br>
+      Attack: 65<br>
+      Defense: 60<br>
+      Sp. Atk: 130<br>
+      Sp. Def: 75<br>
+      Speed: 110
     </p>
   `,
   "Arcanine": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Arcanine received 923 total votes in the Pokémon popularity poll. Arcanine ranked 3 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Fire<br>
       <strong>Abilities:</strong> Intimidate and Flashfire<br>
       <strong>Weaknesses:</strong> Water, Ground, and Rock
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 555; HP: 90; Attack: 110; Defense: 80; Sp. Atk: 100; Sp. Def: 80; Speed: 95
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 555<br>
+      HP: 90<br>
+      Attack: 110<br>
+      Defense: 80<br>
+      Sp. Atk: 100<br>
+      Sp. Def: 80<br>
+      Speed: 95
     </p>
   `,
   "Bulbasaur": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Bulbasaur received 710 total votes in the Pokémon popularity poll. Bulbasaur ranked 4 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Grass/Poison<br>
       <strong>Ability:</strong> Overgrow<br>
       <strong>Weaknesses:</strong> Fire, Ice, Flying, and Psychic
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 318; HP: 45; Attack: 49; Defense: 49; Sp. Atk: 65; Sp. Def: 65; Speed: 45
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 318<br>
+      HP: 45<br>
+      Attack: 49<br>
+      Defense: 49<br>
+      Sp. Atk: 65<br>
+      Sp. Def: 65<br>
+      Speed: 45
     </p>
   `,
   "Blaziken": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Blaziken received 613 total votes in the Pokémon popularity poll. Blaziken ranked 5 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Fire/Fighting<br>
       <strong>Ability:</strong> Blaze<br>
       <strong>Weaknesses:</strong> Water, Ground, Flying, and Psychic
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 530; HP: 80; Attack: 120; Defense: 70; Sp. Atk: 110; Sp. Def: 70; Speed: 80
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 530<br>
+      HP: 80<br>
+      Attack: 120<br>
+      Defense: 70<br>
+      Sp. Atk: 110<br>
+      Sp. Def: 70<br>
+      Speed: 80
     </p>
   `,
   "Umbreon": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Umbreon received 607 total votes in the Pokémon popularity poll. Umbreon ranked 6 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Dark<br>
       <strong>Ability:</strong> Synchronize<br>
       <strong>Weaknesses:</strong> Fighting, Bug, and Fairy
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 525; HP: 95; Attack: 65; Defense: 110; Sp. Atk: 60; Sp. Def: 130; Speed: 65
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 525<br>
+      HP: 95<br>
+      Attack: 65<br>
+      Defense: 110<br>
+      Sp. Atk: 60<br>
+      Sp. Def: 130<br>
+      Speed: 65
     </p>
   `,
   "Lucario": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Lucario received 604 total votes in the Pokémon popularity poll. Lucario ranked 7 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Fighting/Steel<br>
       <strong>Abilities:</strong> Inner Focus and Steadfast<br>
       <strong>Weaknesses:</strong> Fire, Fighting, and Ground
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 525; HP: 70; Attack: 110; Defense: 70; Sp. Atk: 115; Sp. Def: 70; Speed: 90
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 525<br>
+      HP: 70<br>
+      Attack: 110<br>
+      Defense: 70<br>
+      Sp. Atk: 115<br>
+      Sp. Def: 70<br>
+      Speed: 90
     </p>
   `,
   "Gardevoir": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Gardevoir received 585 total votes in the Pokémon popularity poll. Gardevoir ranked 8 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Psychic/Fairy<br>
       <strong>Abilities:</strong> Synchronize and Trace<br>
       <strong>Weaknesses:</strong> Poison, Ghost, and Steel
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 518; HP: 68; Attack: 65; Defense: 65; Sp. Atk: 125; Sp. Def: 115; Speed: 80
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 518<br>
+      HP: 68<br>
+      Attack: 65<br>
+      Defense: 65<br>
+      Sp. Atk: 125<br>
+      Sp. Def: 115<br>
+      Speed: 80
     </p>
   `,
   "Eevee": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Eevee received 581 total votes in the Pokémon popularity poll. Eevee ranked 9 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Normal<br>
       <strong>Abilities:</strong> Run Away and Adaptability<br>
       <strong>Weakness:</strong> Fighting
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 325; HP: 55; Attack: 55; Defense: 50; Sp. Atk: 45; Sp. Def: 65; Speed: 55
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 325<br>
+      HP: 55<br>
+      Attack: 55<br>
+      Defense: 50<br>
+      Sp. Atk: 45<br>
+      Sp. Def: 65<br>
+      Speed: 55
     </p>
   `,
   "Dragonite": `
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       Dragonite received 551 total votes in the Pokémon popularity poll. Dragonite ranked 10 in terms of popularity among all the surveyed Pokémon.
     </p>
-    <p style="margin:0 0 10px 0;color:#555">
+    <p class="poke-desc-text">
       <strong>Type:</strong> Dragon/Flying<br>
       <strong>Ability:</strong> Inner Focus<br>
       <strong>Weaknesses:</strong> Ice, Rock, Dragon, and Fairy (Ice is super effective)
     </p>
-    <p style="margin:0;color:#555">
-      <strong>Base Stats:</strong> Total: 600; HP: 91; Attack: 134; Defense: 95; Sp. Atk: 100; Sp. Def: 100; Speed: 80
+    <p class="poke-desc-text">
+      <strong>Base Stats:</strong><br>
+      Total: 600<br>
+      HP: 91<br>
+      Attack: 134<br>
+      Defense: 95<br>
+      Sp. Atk: 100<br>
+      Sp. Def: 100<br>
+      Speed: 80
     </p>
   `
 };
@@ -203,7 +273,6 @@ const svg = d3.select("#visualization")
   .append("svg")
   .attr("width", width)
   .attr("height", height)
-  .style("background-color", "#f8f4e9");
 
 function showScene(sceneIndex) {
   currentScene = sceneIndex;
@@ -273,11 +342,15 @@ function renderAttributeSlide(attr) {
 
   chartGroup.append("g")
     .attr("transform", `translate(0, ${height - margin.bottom - 50})`)
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .classed("num-label", true);
 
   chartGroup.append("g")
     .attr("transform", `translate(${margin.left}, 0)`)
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y))
+    .selectAll("text")
+    .classed("num-label", true);
 
   svg.append("text")
     .attr("x", width / 2)
@@ -329,11 +402,10 @@ function renderAttributeSlide(attr) {
 
   // Add legend title
   legend.append("text")
-    .attr("x", 0)
+    .attr("x", -30)
     .attr("y", 0)
     .attr("text-anchor", "start")
-    .style("font-size", "14px")
-    .style("font-weight", "bold")
+    .classed("chart-label", true)
     .text("Pokémon Types");
 
   // Add legend items
@@ -357,7 +429,7 @@ function renderAttributeSlide(attr) {
     .attr("x", 20)
     .attr("y", 12)
     .attr("text-anchor", "start")
-    .style("font-size", "12px")
+    .classed("bar-label", true)
     .text(d => d);
 
   // Common hover styles for both buttons
@@ -413,9 +485,8 @@ function renderAttributeSlide(attr) {
     .attr("x", 70)
     .attr("y", 20)
     .attr("text-anchor", "middle")
-    .attr("fill", "#1a1a1a")
-    .style("font-size", "13px")
-    .text("Next Attribute →");
+    .classed("nav-button", true)
+    .text("Next Attribute ->");
 
   addButtonHover(nextGroup);
 
@@ -442,9 +513,8 @@ function renderAttributeSlide(attr) {
     .attr("x", 80)
     .attr("y", 20)
     .attr("text-anchor", "middle")
-    .attr("fill", "#1a1a1a")
-    .style("font-size", "13px")
-    .text("← Previous Attribute");
+    .classed("nav-button", true)
+    .text("<- Previous Attribute");
 
   addButtonHover(prevGroup);
 }
@@ -508,13 +578,13 @@ function showScene2() {
     .attr("transform", `translate(0, ${barHeight})`)
     .call(d3.axisBottom(xScale).ticks(5)) // Uses same scale as bars
     .selectAll("text")
-    .style("font-size", "12px");
+    .classed("num-label", true);
 
   // Add y-axis
   chartGroup.append("g")
     .call(d3.axisLeft(yScale))
     .selectAll("text")
-    .style("font-size", "14px")
+    .classed("num-label", true)
     .style("font-weight", "bold");
 
   // Add axis labels
@@ -522,7 +592,7 @@ function showScene2() {
     .attr("x", barMargin.left + barWidth / 2) // Centered over bars
     .attr("y", height - barMargin.bottom / 2 + 10)
     .attr("text-anchor", "middle")
-    .style("font-size", "16px")
+    .classed("axis-label", true)
     .text("Number of Votes");
 
   svg.append("text")
@@ -530,7 +600,7 @@ function showScene2() {
     .attr("x", -height / 2)
     .attr("y", barMargin.left / 2 - 20)
     .attr("text-anchor", "middle")
-    .style("font-size", "16px")
+    .classed("axis-label", true)
     .text("Pokémon");
 
   // Bars (now using full scale range)
@@ -603,8 +673,7 @@ function showScene2() {
     .attr("x", (imageSize + 15) / 2)
     .attr("y", imageSize + 25)
     .attr("text-anchor", "middle")
-    .style("font-size", "12px")
-    .style("font-weight", "bold")
+    .classed("num-label", true)
     .text(d => d.name);
 
  // Description box to the right of the images
@@ -620,20 +689,15 @@ function showScene2() {
     .style("overflow", "hidden"); // Remove scrollbar
 
   const descDiv = descBox.append("xhtml:div")
-    .style("padding", "15px")
-    .style("background", "#fffdf6ff")
-    .style("border-radius", "8px")
-    .style("box-shadow", "0 2px 8px rgba(0,0,0,0.05)")
-    .style("font-size", "14px") // Slightly smaller font
-    .style("line-height", "1.4") // Tighter line spacing
-    .html(customSummaryText); // Use the custom text here
+    .attr("class", "poke-desc-box")
+    .html(customSummaryText);
 
   function updateDescription(name) {
     const description = pokeDescriptions[name] || "No description available.";
     
     descDiv.html(`
-      <h3 style="margin:0 0 10px 0;color:#333">${name}</h3>
-      <p style="margin:0;color:#555">${description}</p>
+      <h3 class="poke-desc-title">${name}</h3>
+      <p class="poke-desc-text">${description}</p>
     `);
   }
 }
@@ -714,7 +778,7 @@ function showScene3() {
     .append("rect")
     .attr("y", d => barScaleY(d))
     .attr("height", barScaleY.bandwidth())
-    .attr("x", 0)
+    .attr("x", -100)
     .attr("width", 0)
     .attr("fill", d => typeColors(d));
 
@@ -726,11 +790,12 @@ function showScene3() {
     .data(types)
     .enter()
     .append("text")
-    .attr("x", labelX)
+    .attr("x", labelX - 100)
     .attr("y", d => barScaleY(d) + barScaleY.bandwidth() / 2)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .attr("font-weight", "bold")
+    .classed("num-label", true)
     .text(d => d);
 
   // Bar count labels
@@ -740,10 +805,11 @@ function showScene3() {
     .append("text")
     .attr("class", "count-label")
     .attr("y", d => barScaleY(d) + barScaleY.bandwidth() / 2)
-    .attr("x", 0)
+    .attr("x", -100)
     .attr("alignment-baseline", "middle")
     .attr("fill", "black")
     .attr("font-weight", "bold")
+    .classed("num-label", true)
     .text("0");
 
   // Titles
@@ -758,14 +824,14 @@ function showScene3() {
     .attr("x", 20)
     .attr("y", 60)
     .attr("text-anchor", "start")
-    .classed("scene-subtitle2", true)
+    .classed("chart-label", true)
     .text("One Dot = One Pokémon");
 
   svg.append("text")
-    .attr("x", barX + barMargin.left)
+    .attr("x", barX - 120)
     .attr("y", 60)
     .attr("text-anchor", "start")
-    .classed("scene-subtitle2", true)
+    .classed("chart-label", true)
     .text("Total Votes by Pokémon Type");
 
   // Draw gray dots
@@ -795,14 +861,29 @@ function showScene3() {
     .attr("x", 17)
     .attr("y", popularTypeTextY)
     .attr("text-anchor", "left")
-    .text("Most Popular Type: None (0%)");
+    .text("Most Popular Type: ");
+
+  svg.append("text")
+    .attr("class", "popular-type-value")
+    .attr("x", 310)
+    .attr("y", popularTypeTextY)
+    .attr("text-anchor", "left")
+    .text("None (0%)");
 
   svg.append("text")
     .attr("class", "total-votes-text")
     .attr("x", 17)
     .attr("y", totalVotesTextY)
     .attr("text-anchor", "left")
-    .text("Total Votes: 0");
+    .text("Total Votes: ");
+
+  svg.append("text")
+    .attr("class", "total-votes-value")
+    .attr("x", 210)
+    .attr("y", totalVotesTextY)
+    .attr("text-anchor", "left")
+    .style("fill", "#fefae0")
+    .text("0");
 
   animationIndex = 0;
 
@@ -859,7 +940,7 @@ function playAnimation() {
       .data(types, d => d)
       .transition()
       .duration(300)
-      .attr("x", d => barScaleX(typeCounts[d]) + 15)
+      .attr("x", d => barScaleX(typeCounts[d]))
       .text(d => typeCounts[d]);
 
     // Calculate total votes so far
@@ -877,11 +958,12 @@ function playAnimation() {
     const percent = totalVotes > 0 ? ((maxCount / totalVotes) * 100).toFixed(1) : 0;
 
     // Update popular type and total votes text
-    svg.select("text.popular-type-text")
-      .text(`Most Popular Type: ${maxType} (${percent}%)`);
+    svg.select("text.popular-type-value")
+      .text(`${maxType} (${percent}%)`)
+      .style("fill", typeColors(maxType));
 
-    svg.select("text.total-votes-text")
-      .text(`Total Votes: ${totalVotes}`);
+    svg.select("text.total-votes-value")
+      .text(totalVotes);
 
     animationIndex++;
   }, 50);
@@ -925,10 +1007,11 @@ function restartAnimation() {
     .text("0");
 
   // Reset texts
-  svg.select(".popular-type-text")
-    .text("Most Popular Type: None (0%)");
-  svg.select(".total-votes-text")
-    .text("Total Votes: 0");
+  svg.select(".popular-type-value")
+    .text("None (0%)")
+    .style("fill", "#80d8ff");
+  svg.select(".total-votes-value")
+    .text("0");
 
   // Update buttons: show Play, hide Pause
   document.getElementById("play-btn").style.display = "inline-block";
