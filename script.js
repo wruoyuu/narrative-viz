@@ -175,57 +175,93 @@ function renderAttributeSlide(attr) {
     .append("title")
     .text(d => `${d.name} (${d.type1 || d.type})`); // Show type in tooltip
 
+  // Common hover styles for both buttons
+  function addButtonHover(group, defaultFill = "#d0e6f7", hoverFill = "#b6d7f1") {
+    group
+      .on("mouseover", function () {
+        const g = d3.select(this);
+        g.transition().duration(100)
+          .attr("transform", function () {
+            // Get current translate and just add -2 to y
+            const transform = d3.select(this).attr("data-base-transform") || "translate(0,0)";
+            const [x, y] = transform.match(/-?\d+(\.\d+)?/g).map(Number);
+            return `translate(${x}, ${y - 2})`;
+          });
+        
+        g.select("rect")
+          .transition().duration(100)
+          .attr("fill", hoverFill)
+          .style("filter", "drop-shadow(3px 4px 4px rgba(0,0,0,0.3))");
+      })
+      .on("mouseout", function () {
+        const g = d3.select(this);
+        g.transition().duration(100)
+          .attr("transform", g.attr("data-base-transform"));
+
+        g.select("rect")
+          .transition().duration(100)
+          .attr("fill", defaultFill)
+          .style("filter", "drop-shadow(2px 3px 3px rgba(0,0,0,0.2))");
+      });
+  }
+
   // Add "Next" button
   const nextGroup = svg.append("g")
     .attr("transform", `translate(${width - margin.right - 150}, ${height - 40})`)
+    .attr("data-base-transform", `translate(${width - margin.right - 150}, ${height - 40})`)
     .style("cursor", "pointer")
     .on("click", () => {
       currentAttrIndex = (currentAttrIndex + 1) % statAttributes.length;
       renderAttributeSlide(statAttributes[currentAttrIndex]);
-    });
+  });
 
   nextGroup.append("rect")
     .attr("width", 140)
-    .attr("height", 35)
-    .attr("rx", 12)
-    .attr("fill", "#ffffff")
-    .attr("stroke", "#ccc")
-    .attr("stroke-width", 1.5)
+    .attr("height", 30)
+    .attr("rx", 10)
+    .attr("fill", "#d0e6f7")
+    .attr("stroke", "#a0c4de")
+    .attr("stroke-width", 1.2)
     .style("filter", "drop-shadow(2px 3px 3px rgba(0,0,0,0.2))");
 
   nextGroup.append("text")
     .attr("x", 70)
-    .attr("y", 22)
+    .attr("y", 20)
     .attr("text-anchor", "middle")
-    .attr("fill", "#333")
-    .style("font-size", "14px")
+    .attr("fill", "#1a1a1a")
+    .style("font-size", "13px")
     .text("Next Attribute →");
+
+  addButtonHover(nextGroup);
 
   // Add "Previous" button
   const prevGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${height - 40})`)
+    .attr("data-base-transform", `translate(${margin.left}, ${height - 40})`)
     .style("cursor", "pointer")
     .on("click", () => {
       currentAttrIndex = (currentAttrIndex - 1 + statAttributes.length) % statAttributes.length;
       renderAttributeSlide(statAttributes[currentAttrIndex]);
-    });
+  });
 
   prevGroup.append("rect")
     .attr("width", 160)
-    .attr("height", 35)
-    .attr("rx", 12)
-    .attr("fill", "#ffffff")
-    .attr("stroke", "#ccc")
-    .attr("stroke-width", 1.5)
+    .attr("height", 30)
+    .attr("rx", 10)
+    .attr("fill", "#d0e6f7")
+    .attr("stroke", "#a0c4de")
+    .attr("stroke-width", 1.2)
     .style("filter", "drop-shadow(2px 3px 3px rgba(0,0,0,0.2))");
 
   prevGroup.append("text")
     .attr("x", 80)
-    .attr("y", 22)
+    .attr("y", 20)
     .attr("text-anchor", "middle")
-    .attr("fill", "#333")
-    .style("font-size", "14px")
+    .attr("fill", "#1a1a1a")
+    .style("font-size", "13px")
     .text("← Previous Attribute");
+
+  addButtonHover(prevGroup);
 }
 
 function formatAttributeName(attr) {
@@ -718,7 +754,7 @@ function restartAnimation() {
 }
 
 d3.selectAll("#controls button")
-  .style("background-color", "#007BFF")
+  .style("background-color", "#0051cac0")
   .style("color", "white")
   .style("border", "none")
   .style("border-radius", "12px")
@@ -729,13 +765,13 @@ d3.selectAll("#controls button")
   .style("transition", "all 0.2s ease-in-out")
   .on("mouseover", function () {
     d3.select(this)
-      .style("background-color", "#0056b3")
+      .style("background-color", "#306499ff")
       .style("transform", "translateY(-2px)")
       .style("box-shadow", "0 6px 10px rgba(0, 0, 0, 0.2)");
   })
   .on("mouseout", function () {
     d3.select(this)
-      .style("background-color", "#007BFF")
+      .style("background-color", "#0051cac0")
       .style("transform", "translateY(0)")
       .style("box-shadow", "0 4px 6px rgba(0, 0, 0, 0.1)");
   });
