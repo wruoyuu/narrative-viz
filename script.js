@@ -91,7 +91,7 @@ d3.csv("filtered_merged_pokemon.csv").then(csv => {
     d.sp_defense = +d.sp_defense;
   });
   data = csv;
-  // showScene(0);
+
   // Get the last scene from localStorage, or default to 0
   const savedScene = +localStorage.getItem("lastScene");
   showScene(!isNaN(savedScene) ? savedScene : 0);
@@ -174,6 +174,47 @@ function renderAttributeSlide(attr) {
     .attr("stroke-width", 0.5)
     .append("title")
     .text(d => `${d.name} (${d.type1 || d.type})`); // Show type in tooltip
+
+  // Add the color key/legend to the right side
+  const legend = svg.append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width - margin.right + 20}, ${margin.top})`);
+
+  // Get all unique types from the data
+  const uniqueTypes = Array.from(new Set(data.map(d => d.type1 || d.type || "Normal"))).sort();
+
+  // Add legend title
+  legend.append("text")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("text-anchor", "start")
+    .style("font-size", "14px")
+    .style("font-weight", "bold")
+    .text("Pokémon Types");
+
+  // Add legend items
+  const legendItem = legend.selectAll(".legend-item")
+    .data(uniqueTypes)
+    .enter()
+    .append("g")
+    .attr("class", "legend-item")
+    .attr("transform", (d, i) => `translate(0, ${i * 20 + 15})`);
+
+  // Add colored squares
+  legendItem.append("rect")
+    .attr("width", 15)
+    .attr("height", 15)
+    .attr("fill", d => typeColors(d))
+    .attr("stroke", "#333")
+    .attr("stroke-width", 0.5);
+
+  // Add type names
+  legendItem.append("text")
+    .attr("x", 20)
+    .attr("y", 12)
+    .attr("text-anchor", "start")
+    .style("font-size", "12px")
+    .text(d => d);
 
   // Common hover styles for both buttons
   function addButtonHover(group, defaultFill = "#d0e6f7", hoverFill = "#b6d7f1") {
@@ -468,7 +509,7 @@ function showScene3() {
 
   // Bar chart setup
   const barWidth = 300;
-  const barMargin = { top: 70, right: 30, bottom: 20, left: 40 };
+  const barMargin = { top: 70, right: 30, bottom: 10, left: 40 };
   const barHeight = 300;
   const barX = width - barWidth - 20;
 

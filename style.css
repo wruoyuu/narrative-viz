@@ -56,6 +56,10 @@ button:hover {
   justify-content: center;
 }
 
+#visualization svg {
+  overflow: hidden;
+}
+
 /* #page-title {
   text-align: center;
   font-size: 48px;
