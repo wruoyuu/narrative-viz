@@ -1,6 +1,6 @@
 const width = 1000;
 const height = 450;
-const margin = { top: 60, right: 50, bottom: 100, left: 200 };
+const margin = { top: 60, right: 200, bottom: 100, left: 200 }; // Equal left/right margins
 
 let currentScene = 0;
 let data;
@@ -162,11 +162,18 @@ function renderAttributeSlide(attr) {
     .enter()
     .append("circle")
     .attr("cx", d => x(d[attr]))
-    .attr("cy", d => y(d["Number of votes"])) 
-    .attr("r", 4)
-    .attr("fill", "steelblue")
+    .attr("cy", d => y(d["Number of votes"]))
+    .attr("r", 5)
+    .attr("fill", d => {
+      // Use type1 if available, fallback to type
+      const pokemonType = d.type1 || d.type || "Normal"; 
+      return typeColors(pokemonType);
+    })
+    .attr("opacity", 0.8)
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 0.5)
     .append("title")
-    .text(d => d.name);
+    .text(d => `${d.name} (${d.type1 || d.type})`); // Show type in tooltip
 
   // Add "Next" button
   svg.append("text")
@@ -534,14 +541,14 @@ function showScene3() {
 
   svg.append("text")
     .attr("class", "popular-type-text")
-    .attr("x", 20)
+    .attr("x", 17)
     .attr("y", popularTypeTextY)
     .attr("text-anchor", "left")
     .text("Most Popular Type: None (0%)");
 
   svg.append("text")
     .attr("class", "total-votes-text")
-    .attr("x", 20)
+    .attr("x", 17)
     .attr("y", totalVotesTextY)
     .attr("text-anchor", "left")
     .text("Total Votes: 0");
