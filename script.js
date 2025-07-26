@@ -260,7 +260,7 @@ function showScene2() {
   // Add axis labels
   svg.append("text")
     .attr("x", barMargin.left + barWidth / 2) // Centered over bars
-    .attr("y", height - barMargin.bottom / 2)
+    .attr("y", height - barMargin.bottom / 2 + 10)
     .attr("text-anchor", "middle")
     .style("font-size", "16px")
     .text("Number of Votes");
@@ -268,7 +268,7 @@ function showScene2() {
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", barMargin.left / 2 - 10)
+    .attr("y", barMargin.left / 2 - 20)
     .attr("text-anchor", "middle")
     .style("font-size", "16px")
     .text("Pokémon");
