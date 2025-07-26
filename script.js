@@ -1,6 +1,6 @@
 const width = 1000;
-const height = 450;
-const margin = { top: 60, right: 200, bottom: 100, left: 200 }; // Equal left/right margins
+const height = 500;
+const margin = { top: 60, right: 200, bottom: 60, left: 200 }; // Equal left/right margins
 
 let currentScene = 0;
 let data;
@@ -125,10 +125,10 @@ function renderAttributeSlide(attr) {
 
   const y = d3.scaleLinear()
     .domain(d3.extent(data, d => d["Number of votes"]))
-    .range([height - margin.bottom, margin.top]);
+    .range([height - margin.bottom - 50, margin.top]);
 
   chartGroup.append("g")
-    .attr("transform", `translate(0, ${height - margin.bottom})`)
+    .attr("transform", `translate(0, ${height - margin.bottom - 50})`)
     .call(d3.axisBottom(x));
 
   chartGroup.append("g")
@@ -144,7 +144,7 @@ function renderAttributeSlide(attr) {
 
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom + 95)
+    .attr("y", height - margin.bottom + 30)
     .attr("text-anchor", "middle")
     .classed("axis-label", true)
     .text(`${formatAttributeName(attr)}`);
@@ -176,30 +176,56 @@ function renderAttributeSlide(attr) {
     .text(d => `${d.name} (${d.type1 || d.type})`); // Show type in tooltip
 
   // Add "Next" button
-  svg.append("text")
-    .attr("x", width - margin.right)
-    .attr("y", height)
-    .attr("text-anchor", "end")
+  const nextGroup = svg.append("g")
+    .attr("transform", `translate(${width - margin.right - 150}, ${height - 40})`)
     .style("cursor", "pointer")
-    .style("fill", "blue")
-    .text("Next Attribute →")
     .on("click", () => {
       currentAttrIndex = (currentAttrIndex + 1) % statAttributes.length;
       renderAttributeSlide(statAttributes[currentAttrIndex]);
     });
 
+  nextGroup.append("rect")
+    .attr("width", 140)
+    .attr("height", 35)
+    .attr("rx", 12)
+    .attr("fill", "#ffffff")
+    .attr("stroke", "#ccc")
+    .attr("stroke-width", 1.5)
+    .style("filter", "drop-shadow(2px 3px 3px rgba(0,0,0,0.2))");
+
+  nextGroup.append("text")
+    .attr("x", 70)
+    .attr("y", 22)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#333")
+    .style("font-size", "14px")
+    .text("Next Attribute →");
+
   // Add "Previous" button
-  svg.append("text")
-    .attr("x", margin.left)
-    .attr("y", height)
-    .attr("text-anchor", "start") 
+  const prevGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left}, ${height - 40})`)
     .style("cursor", "pointer")
-    .style("fill", "blue")
-    .text("← Previous Attribute")
     .on("click", () => {
-      currentAttrIndex = (currentAttrIndex - 1 + statAttributes.length) % statAttributes.length; 
+      currentAttrIndex = (currentAttrIndex - 1 + statAttributes.length) % statAttributes.length;
       renderAttributeSlide(statAttributes[currentAttrIndex]);
-  });
+    });
+
+  prevGroup.append("rect")
+    .attr("width", 160)
+    .attr("height", 35)
+    .attr("rx", 12)
+    .attr("fill", "#ffffff")
+    .attr("stroke", "#ccc")
+    .attr("stroke-width", 1.5)
+    .style("filter", "drop-shadow(2px 3px 3px rgba(0,0,0,0.2))");
+
+  prevGroup.append("text")
+    .attr("x", 80)
+    .attr("y", 22)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#333")
+    .style("font-size", "14px")
+    .text("← Previous Attribute");
 }
 
 function formatAttributeName(attr) {
@@ -690,3 +716,26 @@ function restartAnimation() {
   document.getElementById("pause-btn").style.display = "none";
   document.getElementById("restart-btn").style.display = "inline-block";
 }
+
+d3.selectAll("#controls button")
+  .style("background-color", "#007BFF")
+  .style("color", "white")
+  .style("border", "none")
+  .style("border-radius", "12px")
+  .style("padding", "10px 18px")
+  .style("font-size", "14px")
+  .style("box-shadow", "0 4px 6px rgba(0, 0, 0, 0.1)")
+  .style("cursor", "pointer")
+  .style("transition", "all 0.2s ease-in-out")
+  .on("mouseover", function () {
+    d3.select(this)
+      .style("background-color", "#0056b3")
+      .style("transform", "translateY(-2px)")
+      .style("box-shadow", "0 6px 10px rgba(0, 0, 0, 0.2)");
+  })
+  .on("mouseout", function () {
+    d3.select(this)
+      .style("background-color", "#007BFF")
+      .style("transform", "translateY(0)")
+      .style("box-shadow", "0 4px 6px rgba(0, 0, 0, 0.1)");
+  });
