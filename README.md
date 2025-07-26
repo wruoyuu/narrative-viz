@@ -10,3 +10,9 @@ pokemon_popularity.csv from https://pastebin.com/LvhaTx7w
 
 
 filtered_merged_pokemon.csv was created by combining the two csv files above and matching values with pokemon name
+
+Fonts Used:
+
+1) https://www.dafont.com/pokemon.font
+
+2) https://fonts.google.com/specimen/Press+Start+2P
