@@ -182,3 +182,15 @@ body {
   fill: #1a1a1a;
   font-size: 6px;
 }
+
+.popular-type-value {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 16px;
+  /* Color will be set dynamically */
+}
+
+.total-votes-value {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 16px;
+  fill: #fefae0;
+}

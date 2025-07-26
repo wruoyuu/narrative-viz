@@ -861,14 +861,29 @@ function showScene3() {
     .attr("x", 17)
     .attr("y", popularTypeTextY)
     .attr("text-anchor", "left")
-    .text("Most Popular Type: None (0%)");
+    .text("Most Popular Type: ");
+
+  svg.append("text")
+    .attr("class", "popular-type-value")
+    .attr("x", 310)
+    .attr("y", popularTypeTextY)
+    .attr("text-anchor", "left")
+    .text("None (0%)");
 
   svg.append("text")
     .attr("class", "total-votes-text")
     .attr("x", 17)
     .attr("y", totalVotesTextY)
     .attr("text-anchor", "left")
-    .text("Total Votes: 0");
+    .text("Total Votes: ");
+
+  svg.append("text")
+    .attr("class", "total-votes-value")
+    .attr("x", 210)
+    .attr("y", totalVotesTextY)
+    .attr("text-anchor", "left")
+    .style("fill", "#fefae0")
+    .text("0");
 
   animationIndex = 0;
 
@@ -943,11 +958,12 @@ function playAnimation() {
     const percent = totalVotes > 0 ? ((maxCount / totalVotes) * 100).toFixed(1) : 0;
 
     // Update popular type and total votes text
-    svg.select("text.popular-type-text")
-      .text(`Most Popular Type: ${maxType} (${percent}%)`);
+    svg.select("text.popular-type-value")
+      .text(`${maxType} (${percent}%)`)
+      .style("fill", typeColors(maxType));
 
-    svg.select("text.total-votes-text")
-      .text(`Total Votes: ${totalVotes}`);
+    svg.select("text.total-votes-value")
+      .text(totalVotes);
 
     animationIndex++;
   }, 50);
@@ -991,10 +1007,11 @@ function restartAnimation() {
     .text("0");
 
   // Reset texts
-  svg.select(".popular-type-text")
-    .text("Most Popular Type: None (0%)");
-  svg.select(".total-votes-text")
-    .text("Total Votes: 0");
+  svg.select(".popular-type-value")
+    .text("None (0%)")
+    .style("fill", "#80d8ff");
+  svg.select(".total-votes-value")
+    .text("0");
 
   // Update buttons: show Play, hide Pause
   document.getElementById("play-btn").style.display = "inline-block";
