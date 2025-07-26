@@ -29,27 +29,159 @@ const typeColors = d3.scaleOrdinal()
   ]);
 
 const customSummaryText = `
-  <h3 style="margin:0 0 10px 0;color:#333">Top 10 Pokémon Summary</h3>
-  <p style="margin:0;color:#555">
+  <h3 style="margin:0 0 10px 0;color:#333">Fan's Top 10 Pokémon</h3>
+  <p style="margin:0 0 10px 0;color:#555">
     This visualization shows the top 10 most popular Pokémon based on fan votes. 
-    Click on any Pokémon's image to learn more about it, including its type, 
-    abilities, weaknesses, and interesting facts.
-
-    In summary, the top 10 Pokémon from 10th to 1st place are: Draonite (551 votes), Eevee (581 votes), Gardevoir (585 votes), Lucario (604 votes), Umbreon (607 votes), Blaziken (613 votes), Bulbasaur (710 votes), Arcanine (923 votes), Gengar (1056 votes), and Charizard (1107 votes).
+    Click on any Pokémon's image to learn more about it.
   </p>
+  <div style="color:#555">
+    <p style="margin:0 0 5px 0;">Top 10 from 1st to 10th place:</p>
+    <ol style="margin:0 0 0 20px;padding:0">
+      <li>Charizard (1107 votes)</li>
+      <li>Gengar (1056 votes)</li>
+      <li>Arcanine (923 votes)</li>
+      <li>Bulbasaur (710 votes)</li>
+      <li>Blaziken (613 votes)</li>
+      <li>Umbreon (607 votes)</li>
+      <li>Lucario (604 votes)</li>
+      <li>Gardevoir (585 votes)</li>
+      <li>Eevee (581 votes)</li>
+      <li>Dragonite (551 votes)</li>
+    </ol>
+  </div>
 `;
 
 const pokeDescriptions = {
-  "Charizard": "Charizard received 1107 total votes in the Pokémon popularity poll. Charizard ranked 1 in terms of popularity among all the surveyed Pokémon. Charizard is a Fire/Flying-type Pokémon. Charizard has the Blaze ability. Charizard's weaknesses are Water, Electric, and Rock. Rock is super effective against Charizard. If Charizard becomes truly angered, the flame at the tip of its tail burns in a light blue shade.",
-  "Gengar": "Gengar received 1056 total votes in the Pokémon popularity poll. Gengar ranked 2 in terms of popularity among all the surveyed Pokémon.  Gengar is a Ghost/Poison-type Pokémon. Gengar has the Cursed Body ability. Gengar's weaknesses are Ground, Psychic, Ghost, and Dark. To steal the life of its target, it slips into the prey’s shadow and silently waits for an opportunity.",
-  "Arcanine": "Arcanine received 923 total votes in the Pokémon popularity poll. Arcanine ranked 3 in terms of popularity among all the surveyed Pokémon.  Arcanine is a Fire-type Pokémon. Arcanine has the Intimidate and Flashfire abilities. Arcanine's weaknesses are Water, Ground, and Rock. An ancient picture scroll shows that people were captivated by its movement as it ran through prairies.",
-  "Bulbasaur": "Bulbasaur received 710 total votes in the Pokémon popularity poll. Bulbasaur ranked 4 in terms of popularity among all the surveyed Pokémon.  Bulbasaur is a Grass/Poison-type Pokémon. Bulbasaur has the Overgrow ability. Bulbasaur's weaknesses are Fire, Ice, Flying, and Psychic. For some time after its birth, it uses the nutrients that are packed into the seed on its back in order to grow.",
-  "Blaziken": "Blaziken received 613 total votes in the Pokémon popularity poll. Blaziken ranked 5 in terms of popularity among all the surveyed Pokémon.  Blaziken is a Fire/Fighting-type Pokémon. Blaziken has the Blaze ability. Blaziken's weaknesses are Water, Ground, Flying, and Psychic. When facing a tough foe, it looses flames from its wrists. Its powerful legs let it jump clear over buildings.",
-  "Umbreon": "Umbreon received 607 total votes in the Pokémon popularity poll. Umbreon ranked 6 in terms of popularity among all the surveyed Pokémon.  Umbreon is a Dark-type Pokémon. Umbreon has the Synchronize ability. Umbreon's weaknesses are Fighting, Bug, and Fairy. When exposed to the moon’s aura, the rings on its body glow faintly and it gains a mysterious power.",
-  "Lucario": "Lucario received 604 total votes in the Pokémon popularity poll. Lucario ranked 7 in terms of popularity among all the surveyed Pokémon.  Lucario is a Fighting/Steel-type Pokémon. Lucario has the Inner Focus and Steadfast abilities. Lucario's weaknesses are Fire, Fighting, and Ground. It’s said that no foe can remain invisible to Lucario, since it can detect auras—even those of foes it could not otherwise see.",
-  "Gardevoir": "Gardevoir received 585 total votes in the Pokémon popularity poll. Gardevoir ranked 8 in terms of popularity among all the surveyed Pokémon.  Gardevoir is a Psychic/Fairy-type Pokémon. Gardevoir has the Synchronize and Trace abilities. Gardevoir's weaknesses are Poison, Ghost, and Steel. To protect its Trainer, it will expend all its psychic power to create a small black hole",
-  "Eevee": "Eevee received 581 total votes in the Pokémon popularity poll. Eevee ranked 9 in terms of popularity among all the surveyed Pokémon.  Eevee is a Normal-type Pokémon. Eevee has the Run Away and Adaptability abilities. Eevee's weakness is Fighting. Its ability to evolve into many forms allows it to adapt smoothly and perfectly to any environment.",
-  "Dragonite": "Dragonite received 551 total votes in the Pokémon popularity poll. Dragonite ranked 10 in terms of popularity among all the surveyed Pokémon.  Dragonite is a Dragon/Flying-type Pokémon. Dragonite has the Inner Focus ability. Dragonite's weaknesses are Ice, Rock, Dragon, and Fairy. Ice is super effective against Dragonite. It is said that somewhere in the ocean lies an island where these gather. Only they live there.",
+  "Charizard": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Charizard received 1107 total votes in the Pokémon popularity poll, ranking 1st in popularity.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Fire/Flying<br>
+      <strong>Ability:</strong> Blaze<br>
+      <strong>Weaknesses:</strong> Water, Electric, Rock (Rock is super effective)
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 534; HP: 78; Attack: 84; Defense: 78; Sp. Atk: 109; Sp. Def: 85; Speed: 100
+    </p>
+  `,
+  "Gengar": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Gengar received 1056 total votes in the Pokémon popularity poll. Gengar ranked 2 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Ghost/Poison<br>
+      <strong>Ability:</strong> Cursed Body<br>
+      <strong>Weaknesses:</strong> Ground, Psychic, Ghost, and Dark
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 500; HP: 60; Attack: 65; Defense: 60; Sp. Atk: 130; Sp. Def: 75; Speed: 110
+    </p>
+  `,
+  "Arcanine": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Arcanine received 923 total votes in the Pokémon popularity poll. Arcanine ranked 3 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Fire<br>
+      <strong>Abilities:</strong> Intimidate and Flashfire<br>
+      <strong>Weaknesses:</strong> Water, Ground, and Rock
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 555; HP: 90; Attack: 110; Defense: 80; Sp. Atk: 100; Sp. Def: 80; Speed: 95
+    </p>
+  `,
+  "Bulbasaur": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Bulbasaur received 710 total votes in the Pokémon popularity poll. Bulbasaur ranked 4 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Grass/Poison<br>
+      <strong>Ability:</strong> Overgrow<br>
+      <strong>Weaknesses:</strong> Fire, Ice, Flying, and Psychic
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 318; HP: 45; Attack: 49; Defense: 49; Sp. Atk: 65; Sp. Def: 65; Speed: 45
+    </p>
+  `,
+  "Blaziken": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Blaziken received 613 total votes in the Pokémon popularity poll. Blaziken ranked 5 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Fire/Fighting<br>
+      <strong>Ability:</strong> Blaze<br>
+      <strong>Weaknesses:</strong> Water, Ground, Flying, and Psychic
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 530; HP: 80; Attack: 120; Defense: 70; Sp. Atk: 110; Sp. Def: 70; Speed: 80
+    </p>
+  `,
+  "Umbreon": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Umbreon received 607 total votes in the Pokémon popularity poll. Umbreon ranked 6 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Dark<br>
+      <strong>Ability:</strong> Synchronize<br>
+      <strong>Weaknesses:</strong> Fighting, Bug, and Fairy
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 525; HP: 95; Attack: 65; Defense: 110; Sp. Atk: 60; Sp. Def: 130; Speed: 65
+    </p>
+  `,
+  "Lucario": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Lucario received 604 total votes in the Pokémon popularity poll. Lucario ranked 7 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Fighting/Steel<br>
+      <strong>Abilities:</strong> Inner Focus and Steadfast<br>
+      <strong>Weaknesses:</strong> Fire, Fighting, and Ground
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 525; HP: 70; Attack: 110; Defense: 70; Sp. Atk: 115; Sp. Def: 70; Speed: 90
+    </p>
+  `,
+  "Gardevoir": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Gardevoir received 585 total votes in the Pokémon popularity poll. Gardevoir ranked 8 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Psychic/Fairy<br>
+      <strong>Abilities:</strong> Synchronize and Trace<br>
+      <strong>Weaknesses:</strong> Poison, Ghost, and Steel
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 518; HP: 68; Attack: 65; Defense: 65; Sp. Atk: 125; Sp. Def: 115; Speed: 80
+    </p>
+  `,
+  "Eevee": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Eevee received 581 total votes in the Pokémon popularity poll. Eevee ranked 9 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Normal<br>
+      <strong>Abilities:</strong> Run Away and Adaptability<br>
+      <strong>Weakness:</strong> Fighting
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 325; HP: 55; Attack: 55; Defense: 50; Sp. Atk: 45; Sp. Def: 65; Speed: 55
+    </p>
+  `,
+  "Dragonite": `
+    <p style="margin:0 0 10px 0;color:#555">
+      Dragonite received 551 total votes in the Pokémon popularity poll. Dragonite ranked 10 in terms of popularity among all the surveyed Pokémon.
+    </p>
+    <p style="margin:0 0 10px 0;color:#555">
+      <strong>Type:</strong> Dragon/Flying<br>
+      <strong>Ability:</strong> Inner Focus<br>
+      <strong>Weaknesses:</strong> Ice, Rock, Dragon, and Fairy (Ice is super effective)
+    </p>
+    <p style="margin:0;color:#555">
+      <strong>Base Stats:</strong> Total: 600; HP: 91; Attack: 134; Defense: 95; Sp. Atk: 100; Sp. Def: 100; Speed: 80
+    </p>
+  `
 };
 
 const pokeIdByName = {
@@ -70,7 +202,8 @@ const pokeIdByName = {
 const svg = d3.select("#visualization")
   .append("svg")
   .attr("width", width)
-  .attr("height", height);
+  .attr("height", height)
+  .style("background-color", "#f8f4e9");
 
 function showScene(sceneIndex) {
   currentScene = sceneIndex;
@@ -488,9 +621,9 @@ function showScene2() {
 
   const descDiv = descBox.append("xhtml:div")
     .style("padding", "15px")
-    .style("background", "#f8f8f8")
+    .style("background", "#fffdf6ff")
     .style("border-radius", "8px")
-    .style("box-shadow", "0 2px 8px rgba(0,0,0,0.1)")
+    .style("box-shadow", "0 2px 8px rgba(0,0,0,0.05)")
     .style("font-size", "14px") // Slightly smaller font
     .style("line-height", "1.4") // Tighter line spacing
     .html(customSummaryText); // Use the custom text here
