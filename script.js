@@ -32,10 +32,10 @@ const customSummaryText = `
   <h3 class="poke-desc-title">Fan's Top 10 Pokémon</h3>
   <p class="poke-desc-text">
     This visualization shows the top 10 most popular Pokémon based on fan votes. 
-    Click on any Pokémon's image to learn more about it.
+    Click on any Pokémon's image to learn more about the Pokémon's poll ranking, types, abilities, weaknesses, and base stats.
   </p>
-  <div class="poke-desc-text">
-    <p class="poke-desc-text">Top 10 from 1st to 10th place:</p>
+  <div>
+    <p class="poke-desc-text2">Top 10 from 1st to 10th place:</p>
     <ol class="poke-desc-text">
       <li>Charizard (1107 votes)</li>
       <li>Gengar (1056 votes)</li>

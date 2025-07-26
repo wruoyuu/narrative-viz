@@ -177,6 +177,12 @@ body {
   font-size: 8px;
 }
 
+.poke-desc-text2 {
+  color: #333;
+  font-size: 8px;
+  font-weight: bold;
+}
+
 .nav-button {
   font-family: 'Press Start 2P', monospace;
   fill: #1a1a1a;
