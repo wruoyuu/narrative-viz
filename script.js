@@ -485,9 +485,8 @@ function renderAttributeSlide(attr) {
     .attr("x", 70)
     .attr("y", 20)
     .attr("text-anchor", "middle")
-    .attr("fill", "#1a1a1a")
-    .style("font-size", "13px")
-    .text("Next Attribute →");
+    .classed("nav-button", true)
+    .text("Next Attribute ->");
 
   addButtonHover(nextGroup);
 
@@ -514,9 +513,8 @@ function renderAttributeSlide(attr) {
     .attr("x", 80)
     .attr("y", 20)
     .attr("text-anchor", "middle")
-    .attr("fill", "#1a1a1a")
-    .style("font-size", "13px")
-    .text("← Previous Attribute");
+    .classed("nav-button", true)
+    .text("<- Previous Attribute");
 
   addButtonHover(prevGroup);
 }
