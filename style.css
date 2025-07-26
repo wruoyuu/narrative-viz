@@ -10,12 +10,12 @@ svg text {
   fill: #222;
 }
 
-.scene-title {
+/* .scene-title {
   font-size: 36px;
   font-weight: bold;
   text-anchor: middle;
   fill: #111;
-}
+} */
 
 .scene-subtitle {
   font-size: 24px;
@@ -56,7 +56,7 @@ button:hover {
   justify-content: center;
 }
 
-#page-title {
+/* #page-title {
   text-align: center;
   font-size: 48px;
   font-weight: bold;
@@ -64,7 +64,7 @@ button:hover {
   margin-bottom: 10px;
   font-family: sans-serif;
   color: #222;
-}
+} */
 
 .popular-type-text {
   font-size: 28px;
@@ -84,7 +84,6 @@ button:hover {
   z-index: 10;
 }
 
-/* Add to style.css */
 .bar-label {
   font-size: 12px;
   font-weight: bold;
@@ -138,7 +137,6 @@ button:hover {
   margin-bottom: 0;
 }
 
-/* style.css */
 .description-panel {
   background: #f8f8f8;
   padding: 15px;
@@ -159,4 +157,28 @@ button:hover {
 
 .pokemon:hover {
   transform: scale(1.05);
+}
+
+@font-face {
+  font-family: "PokemonSolid";
+  src: url("fonts/Pokemon Solid.ttf") format("truetype");
+}
+
+#page-title {
+  font-family: "PokemonSolid", sans-serif;
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  color: #222;
+  letter-spacing: 5px;
+}
+
+.scene-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 20px;
+  font-weight: bold;
+  text-anchor: middle;
+  fill: #111;
 }
