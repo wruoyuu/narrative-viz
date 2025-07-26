@@ -1,6 +1,6 @@
-const width = 900;
+const width = 1000;
 const height = 450;
-const margin = { top: 60, right: 50, bottom: 100, left: 80 };
+const margin = { top: 60, right: 50, bottom: 100, left: 200 };
 
 let currentScene = 0;
 let data;
@@ -27,6 +27,34 @@ const typeColors = d3.scaleOrdinal()
     "#F8D030", "#E0C068", "#EE99AC", "#C03028", "#F85888", "#B8A038",
     "#705898", "#98D8D8", "#7038F8", "#705848", "#B8B8D0", "#A890F0"
   ]);
+
+const pokeDescriptions = {
+  "Charizard": "Charizard received 1107 total votes in the Pokémon popularity poll. Charizard ranked 1 in terms of popularity among all the surveyed Pokémon. Charizard is a Fire/Flying-type Pokémon. Charizard has the Blaze ability. Charizard's weaknesses are Water, Electric, and Rock. Rock is super effective against Charizard. If Charizard becomes truly angered, the flame at the tip of its tail burns in a light blue shade.",
+  "Gengar": "Gengar received 1056 total votes in the Pokémon popularity poll. Gengar ranked 2 in terms of popularity among all the surveyed Pokémon.  Gengar is a Ghost/Poison-type Pokémon. Gengar has the Cursed Body ability. Gengar's weaknesses are Ground, Psychic, Ghost, and Dark. To steal the life of its target, it slips into the prey’s shadow and silently waits for an opportunity.",
+  "Arcanine": "Arcanine received 923 total votes in the Pokémon popularity poll. Arcanine ranked 3 in terms of popularity among all the surveyed Pokémon.  Arcanine is a Fire-type Pokémon. Arcanine has the Intimidate and Flashfire abilities. Arcanine's weaknesses are Water, Ground, and Rock. An ancient picture scroll shows that people were captivated by its movement as it ran through prairies.",
+  "Bulbasaur": "Bulbasaur received 710 total votes in the Pokémon popularity poll. Bulbasaur ranked 4 in terms of popularity among all the surveyed Pokémon.  Bulbasaur is a Grass/Poison-type Pokémon. Bulbasaur has the Overgrow ability. Bulbasaur's weaknesses are Fire, Ice, Flying, and Psychic. For some time after its birth, it uses the nutrients that are packed into the seed on its back in order to grow.",
+  "Blaziken": "Blaziken received 613 total votes in the Pokémon popularity poll. Blaziken ranked 5 in terms of popularity among all the surveyed Pokémon.  Blaziken is a Fire/Fighting-type Pokémon. Blaziken has the Blaze ability. Blaziken's weaknesses are Water, Ground, Flying, and Psychic. When facing a tough foe, it looses flames from its wrists. Its powerful legs let it jump clear over buildings.",
+  "Umbreon": "Umbreon received 607 total votes in the Pokémon popularity poll. Umbreon ranked 6 in terms of popularity among all the surveyed Pokémon.  Umbreon is a Dark-type Pokémon. Umbreon has the Synchronize ability. Umbreon's weaknesses are Fighting, Bug, and Fairy. When exposed to the moon’s aura, the rings on its body glow faintly and it gains a mysterious power.",
+  "Lucario": "Lucario received 604 total votes in the Pokémon popularity poll. Lucario ranked 7 in terms of popularity among all the surveyed Pokémon.  Lucario is a Fighting/Steel-type Pokémon. Lucario has the Inner Focus and Steadfast abilities. Lucario's weaknesses are Fire, Fighting, and Ground. It’s said that no foe can remain invisible to Lucario, since it can detect auras—even those of foes it could not otherwise see.",
+  "Gardevoir": "Gardevoir received 585 total votes in the Pokémon popularity poll. Gardevoir ranked 8 in terms of popularity among all the surveyed Pokémon.  Gardevoir is a Psychic/Fairy-type Pokémon. Gardevoir has the Synchronize and Trace abilities. Gardevoir's weaknesses are Poison, Ghost, and Steel. To protect its Trainer, it will expend all its psychic power to create a small black hole",
+  "Eevee": "Eevee received 581 total votes in the Pokémon popularity poll. Eevee ranked 9 in terms of popularity among all the surveyed Pokémon.  Eevee is a Normal-type Pokémon. Eevee has the Run Away and Adaptability abilities. Eevee's weakness is Fighting. Its ability to evolve into many forms allows it to adapt smoothly and perfectly to any environment.",
+  "Dragonite": "Dragonite received 551 total votes in the Pokémon popularity poll. Dragonite ranked 10 in terms of popularity among all the surveyed Pokémon.  Dragonite is a Dragon/Flying-type Pokémon. Dragonite has the Inner Focus ability. Dragonite's weaknesses are Ice, Rock, Dragon, and Fairy. Ice is super effective against Dragonite. It is said that somewhere in the ocean lies an island where these gather. Only they live there.",
+};
+
+const pokeIdByName = {
+  "Bulbasaur": 1,
+  "Arcanine": 59,
+  "Blaziken": 257,
+  "Charizard": 6,
+  "Gengar": 94,
+  "Lucario": 448,
+  "Umbreon": 197,
+  "Sylveon": 700,
+  "Pikachu": 25,
+  "Eevee": 133,
+  "Gardevoir": 282,
+  "Dragonite": 149
+};
 
 const svg = d3.select("#visualization")
   .append("svg")
@@ -173,24 +201,9 @@ function formatAttributeName(attr) {
     .replace(/\b\w/g, l => l.toUpperCase()); // capitalize words
 }
 
-// Scene 2: Top Ten Pokemon Flow Chart
+// Scene 2: Magazine Visual of Top 10 Pokemon
 function showScene2() {
   svg.selectAll("*").remove();
-
-  const pokeIdByName = {
-    "Bulbasaur": 1,
-    "Arcanine": 59,
-    "Blaziken": 257,
-    "Charizard": 6,
-    "Gengar": 94,
-    "Lucario": 448,
-    "Umbreon": 197,
-    "Sylveon": 700,
-    "Pikachu": 25,
-    "Eevee": 133,
-    "Gardevoir": 282,
-    "Dragonite": 149
-  };
 
   const top10 = data
     .sort((a, b) => b["Number of votes"] - a["Number of votes"])
@@ -199,108 +212,174 @@ function showScene2() {
   top10.forEach(d => {
     const id = pokeIdByName[d.name];
     d.imageURL = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+    d.type = d.type1 || d.type;
   });
 
-  const availableWidth = width - margin.left - margin.right;
-  const spacing = availableWidth / (top10.length - 1);
-  const radius = Math.min(45, spacing / 2 - 10);
-  const startX = margin.left;
-  const centerY = height / 2 - 70;
+  // Adjust margins for better layout
+  const barMargin = { top: 80, right: 350, bottom: 80, left: 150 };
+  const barWidth = (width - barMargin.left - barMargin.right) / 2; // Half width for bars
+  const barHeight = height - barMargin.top - barMargin.bottom;
 
+  // Create scale with HALF range to match bars
+  const xScale = d3.scaleLinear()
+    .domain([0, d3.max(top10, d => d["Number of votes"])])
+    .range([0, barWidth]); // Range is now half of original
+
+  const yScale = d3.scaleBand()
+    .domain(top10.map(d => d.name))
+    .range([0, barHeight])
+    .padding(0.3);
+
+  // Main chart group
+  const chartGroup = svg.append("g")
+    .attr("transform", `translate(${barMargin.left}, ${barMargin.top})`);
+
+  // Add title
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", margin.top / 2)
+    .attr("y", barMargin.top / 2)
     .attr("text-anchor", "middle")
-    .classed("scene-title", true)
+    .style("font-size", "24px")
+    .style("font-weight", "bold")
     .text("Top 10 Most Popular Pokémon");
 
+  // Add x-axis (now matches bar lengths)
+  chartGroup.append("g")
+    .attr("transform", `translate(0, ${barHeight})`)
+    .call(d3.axisBottom(xScale).ticks(5)) // Uses same scale as bars
+    .selectAll("text")
+    .style("font-size", "12px");
+
+  // Add y-axis
+  chartGroup.append("g")
+    .call(d3.axisLeft(yScale))
+    .selectAll("text")
+    .style("font-size", "14px")
+    .style("font-weight", "bold");
+
+  // Add axis labels
   svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2 + 35)
+    .attr("x", barMargin.left + barWidth / 2) // Centered over bars
+    .attr("y", height - barMargin.bottom / 2)
     .attr("text-anchor", "middle")
-    .classed("scene-subtitle", true)
-    .text("Hover over each Pokémon to see their types!");
+    .style("font-size", "16px")
+    .text("Number of Votes");
 
-  // Arrowhead marker
-  svg.append("defs").append("marker")
-    .attr("id", "arrowhead")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 10)
-    .attr("refY", 0)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
-    .attr("orient", "auto")
-    .append("path")
-    .attr("d", "M0,-5L10,0L0,5")
-    .attr("fill", "#666");
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", barMargin.left / 2 - 10)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .text("Pokémon");
 
-  const positions = top10.map((d, i) => ({
-    x: startX + i * spacing,
-    y: centerY
-  }));
+  // Bars (now using full scale range)
+  chartGroup.selectAll("rect")
+    .data(top10)
+    .enter()
+    .append("rect")
+    .attr("y", d => yScale(d.name))
+    .attr("width", d => xScale(d["Number of votes"])) // No division now
+    .attr("height", yScale.bandwidth())
+    .attr("fill", d => typeColors(d.type))
+    .attr("rx", 4)
+    .attr("ry", 4);
 
-  // Draw arrows between nodes
-  for (let i = 0; i < top10.length - 1; i++) {
-    svg.append("line")
-      .attr("x1", positions[i].x + radius)
-      .attr("y1", positions[i].y)
-      .attr("x2", positions[i + 1].x - radius)
-      .attr("y2", positions[i + 1].y)
-      .attr("stroke", "#666")
-      .attr("stroke-width", 2)
-      .attr("marker-end", "url(#arrowhead)");
-  }
+  // Value labels (adjusted for new scale)
+  chartGroup.selectAll("text.bar-label")
+    .data(top10)
+    .enter()
+    .append("text")
+    .attr("class", "bar-label")
+    .attr("x", d => xScale(d["Number of votes"]) - 10) // Closer to end
+    .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 5)
+    .attr("text-anchor", "end")
+    .style("font-size", "12px")
+    .style("fill", "white")
+    .style("font-weight", "bold")
+    .text(d => d["Number of votes"]);
 
-  const nodes = svg.selectAll("g.node")
+  // Pokémon images - positioned closer to bar graph
+  const imageColGap = 100; // Reduced from previous larger gap
+  const imageColWidth = 120; // Total width for image columns
+  const imageGroup = svg.append("g")
+    .attr("transform", `translate(${barMargin.left + barWidth + imageColGap}, ${barMargin.top})`); // Right after bars
+
+  const imageSize = 40;
+  const colWidth = 70; // Width per column
+  const rowHeight = 75; // Height per row
+
+  // Create 2 columns of 5 images each
+  const imageNodes = imageGroup.selectAll("g")
     .data(top10)
     .enter()
     .append("g")
-    .attr("class", "node")
-    .attr("transform", (d, i) => `translate(${positions[i].x}, ${positions[i].y})`);
+    .attr("transform", (d, i) => {
+      const col = i < 5 ? 0 : colWidth;
+      const row = i % 5;
+      return `translate(${col}, ${row * rowHeight})`;
+    })
+    .style("cursor", "pointer")
+    .on("click", (event, d) => updateDescription(d.name));
 
-  nodes.append("circle")
-    .attr("r", radius)
-    .attr("fill", "#ffd966")
-    .attr("stroke", "#b38600")
-    .attr("stroke-width", 3);
+  // Image backgrounds
+  imageNodes.append("rect")
+    .attr("width", imageSize + 15)
+    .attr("height", imageSize + 15)
+    .attr("rx", 6)
+    .attr("fill", d => typeColors(d.type))
+    .attr("opacity", 0.2);
 
-  nodes.append("image")
+  // Pokémon images
+  imageNodes.append("image")
     .attr("xlink:href", d => d.imageURL)
-    .attr("x", -radius * 0.7)
-    .attr("y", -radius * 0.7)
-    .attr("width", radius * 1.4)
-    .attr("height", radius * 1.4);
+    .attr("width", imageSize)
+    .attr("height", imageSize)
+    .attr("x", 7.5)
+    .attr("y", 7.5);
 
-  nodes.append("text")
-    .attr("y", radius + 20)
+  // Pokémon names
+  imageNodes.append("text")
+    .attr("x", (imageSize + 15) / 2)
+    .attr("y", imageSize + 25)
     .attr("text-anchor", "middle")
-    .attr("font-weight", "bold")
+    .style("font-size", "12px")
+    .style("font-weight", "bold")
     .text(d => d.name);
 
-  nodes.append("text")
-    .attr("y", radius + 40)
-    .attr("text-anchor", "middle")
-    .text(d => `${d["Number of votes"]} votes`);
+  // Description box to the right of the images
+  const descBoxGap = 20;
+  const descBoxWidth = 250;
+  const descBoxHeight = 5 * rowHeight; // Match total height of image columns
 
-    const tooltip = d3.select("#tooltip");
+  const descBox = svg.append("foreignObject")
+    .attr("x", barMargin.left + barWidth + imageColGap + imageColWidth + descBoxGap)
+    .attr("y", barMargin.top)
+    .attr("width", descBoxWidth)
+    .attr("height", descBoxHeight)
+    .style("overflow", "hidden"); // Remove scrollbar
 
-  nodes.on("mouseover", function (event, d) {
-    tooltip
-      .style("display", "block")
-      .html(`
-        <strong>${d.name}</strong><br>
-        Type: ${d.type1}${d.type2 ? " / " + d.type2 : ""}
-      `);
-  })
-  .on("mousemove", function (event) {
-    tooltip
-      .style("left", (event.pageX + 10) + "px")
-      .style("top", (event.pageY - 28) + "px");
-  })
-  .on("mouseout", function () {
-    tooltip.style("display", "none");
-  });
+  const descDiv = descBox.append("xhtml:div")
+    .style("padding", "15px")
+    .style("background", "#f8f8f8")
+    .style("border-radius", "8px")
+    .style("box-shadow", "0 2px 8px rgba(0,0,0,0.1)")
+    .style("font-size", "14px") // Slightly smaller font
+    .style("line-height", "1.4") // Tighter line spacing
+    .html(`
+      <h3 style="margin:0 0 10px 0;color:#333">${top10[0].name}</h3>
+      <p style="margin:0;color:#555">${pokeDescriptions[top10[0].name]}</p>
+    `);
 
+  // Update function with optimized text fitting
+  function updateDescription(name) {
+    const description = pokeDescriptions[name] || "No description available.";
+    
+    descDiv.html(`
+      <h3 style="margin:0 0 10px 0;color:#333">${name}</h3>
+      <p style="margin:0;color:#555">${description}</p>
+    `);
+  }
 }
 
 // Scene 3: FlowingData-style animation in D3 where each dot represents a Pokémon and bars grow by votes - Video Visual Genre
