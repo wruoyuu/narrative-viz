@@ -342,11 +342,15 @@ function renderAttributeSlide(attr) {
 
   chartGroup.append("g")
     .attr("transform", `translate(0, ${height - margin.bottom - 50})`)
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .classed("num-label", true);
 
   chartGroup.append("g")
     .attr("transform", `translate(${margin.left}, 0)`)
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y))
+    .selectAll("text")
+    .classed("num-label", true);
 
   svg.append("text")
     .attr("x", width / 2)
@@ -576,13 +580,13 @@ function showScene2() {
     .attr("transform", `translate(0, ${barHeight})`)
     .call(d3.axisBottom(xScale).ticks(5)) // Uses same scale as bars
     .selectAll("text")
-    .style("font-size", "12px");
+    .classed("num-label", true);
 
   // Add y-axis
   chartGroup.append("g")
     .call(d3.axisLeft(yScale))
     .selectAll("text")
-    .style("font-size", "14px")
+    .classed("num-label", true)
     .style("font-weight", "bold");
 
   // Add axis labels
@@ -671,7 +675,7 @@ function showScene2() {
     .attr("x", (imageSize + 15) / 2)
     .attr("y", imageSize + 25)
     .attr("text-anchor", "middle")
-    .classed("axis-label", true)
+    .classed("num-label", true)
     .text(d => d.name);
 
  // Description box to the right of the images
@@ -793,7 +797,7 @@ function showScene3() {
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .attr("font-weight", "bold")
-    .classed("axis-label", true)
+    .classed("num-label", true)
     .text(d => d);
 
   // Bar count labels
@@ -807,7 +811,7 @@ function showScene3() {
     .attr("alignment-baseline", "middle")
     .attr("fill", "black")
     .attr("font-weight", "bold")
-    .classed("axis-label", true)
+    .classed("num-label", true)
     .text("0");
 
   // Titles

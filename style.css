@@ -149,6 +149,11 @@ body {
 
 .axis-label,
 .bar-label {
+  font-size: 18px;
+  fill: #fefae0;
+}
+
+.num-label {
   font-size: 12px;
   fill: #fefae0;
 }
