@@ -18,12 +18,18 @@ svg text {
 }
 
 .scene-subtitle {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   text-anchor: middle;
   fill: #111;
 }
 
+.scene-subtitle2 {
+  font-size: 16px;
+  font-weight: bold;
+  text-anchor: left;
+  fill: #111;
+}
 
 button {
   margin: 10px;
@@ -52,7 +58,7 @@ button:hover {
 
 #page-title {
   text-align: center;
-  font-size: 28px;
+  font-size: 48px;
   font-weight: bold;
   margin-top: 20px;
   margin-bottom: 10px;
@@ -76,4 +82,81 @@ button:hover {
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
   max-width: 200px;
   z-index: 10;
+}
+
+/* Add to style.css */
+.bar-label {
+  font-size: 12px;
+  font-weight: bold;
+  fill: white;
+}
+
+.pokemon-image {
+  transition: transform 0.2s;
+}
+
+.pokemon-image:hover {
+  transform: scale(1.05);
+}
+
+.description-box {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.description-box h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.description-box p {
+  margin-bottom: 0;
+  color: #555;
+}
+
+/* Ensures description text wraps properly */
+.description-panel {
+  padding: 15px;
+  background: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+}
+
+.description-panel h3 {
+  color: #333;
+  margin-top: 0;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 8px;
+}
+
+.description-panel p {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+/* style.css */
+.description-panel {
+  background: #f8f8f8;
+  padding: 15px;
+  border-radius: 8px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.image-scroll-group {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.pokemon {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.pokemon:hover {
+  transform: scale(1.05);
 }
