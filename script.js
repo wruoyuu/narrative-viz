@@ -35,7 +35,7 @@ const customSummaryText = `
     Click on any Pokémon's image to learn more about the Pokémon's poll ranking, types, abilities, weaknesses, and base stats.
   </p>
   <div>
-    <p class="poke-desc-text2">Top 10 from 1st to 10th place:</p>
+    <p class="poke-desc-text2"><strong>Top 10 from 1st to 10th place:</strong></p>
     <ol class="poke-desc-text">
       <li>Charizard (1107 votes)</li>
       <li>Gengar (1056 votes)</li>
