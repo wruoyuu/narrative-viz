@@ -805,9 +805,11 @@ function showScene3() {
     .append("text")
     .attr("class", "count-label")
     .attr("y", d => barScaleY(d) + barScaleY.bandwidth() / 2)
-    .attr("x", -100)
+    .attr("x", -100) // Start at beginning of bars
+    .attr("dx", "0.05em") // Small offset from bar end
+    .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
-    .attr("fill", "black")
+    .attr("fill", "#fefae0")
     .attr("font-weight", "bold")
     .classed("num-label", true)
     .text("0");
@@ -940,7 +942,11 @@ function playAnimation() {
       .data(types, d => d)
       .transition()
       .duration(300)
-      .attr("x", d => barScaleX(typeCounts[d]))
+      .attrTween("x", function(d) {
+        const currentX = d3.select(this).attr("x");
+        const targetX = barScaleX(typeCounts[d]) - 100;
+        return d3.interpolateNumber(currentX, targetX);
+      })
       .text(d => typeCounts[d]);
 
     // Calculate total votes so far
@@ -1003,7 +1009,7 @@ function restartAnimation() {
   barsGroup.selectAll(".count-label")
     .transition()
     .duration(300)
-    .attr("x", 0)
+    .attr("x", -100) // Reset to bar start
     .text("0");
 
   // Reset texts
