@@ -28,6 +28,17 @@ const typeColors = d3.scaleOrdinal()
     "#705898", "#98D8D8", "#7038F8", "#705848", "#B8B8D0", "#A890F0"
   ]);
 
+const customSummaryText = `
+  <h3 style="margin:0 0 10px 0;color:#333">Top 10 Pokémon Summary</h3>
+  <p style="margin:0;color:#555">
+    This visualization shows the top 10 most popular Pokémon based on fan votes. 
+    Click on any Pokémon's image to learn more about it, including its type, 
+    abilities, weaknesses, and interesting facts.
+
+    In summary, the top 10 Pokémon from 10th to 1st place are: Draonite (551 votes), Eevee (581 votes), Gardevoir (585 votes), Lucario (604 votes), Umbreon (607 votes), Blaziken (613 votes), Bulbasaur (710 votes), Arcanine (923 votes), Gengar (1056 votes), and Charizard (1107 votes).
+  </p>
+`;
+
 const pokeDescriptions = {
   "Charizard": "Charizard received 1107 total votes in the Pokémon popularity poll. Charizard ranked 1 in terms of popularity among all the surveyed Pokémon. Charizard is a Fire/Flying-type Pokémon. Charizard has the Blaze ability. Charizard's weaknesses are Water, Electric, and Rock. Rock is super effective against Charizard. If Charizard becomes truly angered, the flame at the tip of its tail burns in a light blue shade.",
   "Gengar": "Gengar received 1056 total votes in the Pokémon popularity poll. Gengar ranked 2 in terms of popularity among all the surveyed Pokémon.  Gengar is a Ghost/Poison-type Pokémon. Gengar has the Cursed Body ability. Gengar's weaknesses are Ground, Psychic, Ghost, and Dark. To steal the life of its target, it slips into the prey’s shadow and silently waits for an opportunity.",
@@ -463,7 +474,7 @@ function showScene2() {
     .style("font-weight", "bold")
     .text(d => d.name);
 
-  // Description box to the right of the images
+ // Description box to the right of the images
   const descBoxGap = 20;
   const descBoxWidth = 250;
   const descBoxHeight = 5 * rowHeight; // Match total height of image columns
@@ -482,12 +493,8 @@ function showScene2() {
     .style("box-shadow", "0 2px 8px rgba(0,0,0,0.1)")
     .style("font-size", "14px") // Slightly smaller font
     .style("line-height", "1.4") // Tighter line spacing
-    .html(`
-      <h3 style="margin:0 0 10px 0;color:#333">${top10[0].name}</h3>
-      <p style="margin:0;color:#555">${pokeDescriptions[top10[0].name]}</p>
-    `);
+    .html(customSummaryText); // Use the custom text here
 
-  // Update function with optimized text fitting
   function updateDescription(name) {
     const description = pokeDescriptions[name] || "No description available.";
     
