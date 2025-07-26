@@ -514,6 +514,8 @@ function showScene3() {
   animationIndex = 0;
   svg.selectAll("*").remove();
 
+  svg.style("overflow", "hidden");
+
   // Bar chart setup
   const barWidth = 300;
   const barMargin = { top: 70, right: 30, bottom: 10, left: 40 };
