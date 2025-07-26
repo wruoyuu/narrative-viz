@@ -754,7 +754,7 @@ function restartAnimation() {
 }
 
 d3.selectAll("#controls button")
-  .style("background-color", "#007BFF")
+  .style("background-color", "#0051cac0")
   .style("color", "white")
   .style("border", "none")
   .style("border-radius", "12px")
@@ -765,13 +765,13 @@ d3.selectAll("#controls button")
   .style("transition", "all 0.2s ease-in-out")
   .on("mouseover", function () {
     d3.select(this)
-      .style("background-color", "#0056b3")
+      .style("background-color", "#306499ff")
       .style("transform", "translateY(-2px)")
       .style("box-shadow", "0 6px 10px rgba(0, 0, 0, 0.2)");
   })
   .on("mouseout", function () {
     d3.select(this)
-      .style("background-color", "#007BFF")
+      .style("background-color", "#0051cac0")
       .style("transform", "translateY(0)")
       .style("box-shadow", "0 4px 6px rgba(0, 0, 0, 0.1)");
   });
