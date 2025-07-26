@@ -222,6 +222,13 @@ function showScene2() {
     d.type = d.type1 || d.type;
   });
 
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2 + 35)
+    .attr("text-anchor", "middle")
+    .classed("scene-subtitle2", true)
+    .text(`Please click on each Pokémon for more detail.`);
+
   // Adjust margins for better layout
   const barMargin = { top: 80, right: 350, bottom: 80, left: 150 };
   const barWidth = (width - barMargin.left - barMargin.right) / 2; // Half width for bars
@@ -246,8 +253,7 @@ function showScene2() {
     .attr("x", width / 2)
     .attr("y", barMargin.top / 2)
     .attr("text-anchor", "middle")
-    .style("font-size", "24px")
-    .style("font-weight", "bold")
+    .classed("scene-title", true)
     .text("Top 10 Most Popular Pokémon");
 
   // Add x-axis (now matches bar lengths)
