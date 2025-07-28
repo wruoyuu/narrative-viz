@@ -289,7 +289,7 @@ function updateStatusText(scene, data = null) {
         text = `Viewing the current data, it seems that ${data.strongerFactor} has more of an effect on Pokémon popularity. Click any Pokémon for details.`;
         console.log("Setting initial scene 2 text:", text); // Debug line
       } else if (data && data.pokemonName) {
-        text = `Viewing details for ${data.pokemonName}: Overall, ${data.strongerFactor} has more effect on popularity.`;
+        text = `Viewing details for ${data.pokemonName}: Overall, ${data.getDominantInfluence(data.pokemon)} appears to have more effect on popularity for ${data.pokemonName}.`;
       }
       break;
     case 2: // Scene 3
@@ -309,6 +309,24 @@ function updateStatusText(scene, data = null) {
     .style("font-size", "12px")
     .style("margin-top", "10px")
     .style("text-align", "center");
+}
+
+function getDominantInfluence(pokemon) {
+  // Compare to others of same type
+  const sameTypePokemon = data.filter(d => (d.type1 || d.type) === pokemon.type);
+  const typeRank = sameTypePokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                 .findIndex(d => d.name === pokemon.name) + 1;
+  
+  // Compare to others with similar stats (±50 total)
+  const similarStatsPokemon = data.filter(d => Math.abs(d.total - pokemon.total) < 50);
+  const statsRank = similarStatsPokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                     .findIndex(d => d.name === pokemon.name) + 1;
+
+  // Determine which factor is more dominant
+  const typePercentile = typeRank / sameTypePokemon.length;
+  const statsPercentile = statsRank / similarStatsPokemon.length;
+  
+  return statsPercentile < typePercentile ? "base stats" : "type";
 }
 
 function analyzeTop10(top10) {
@@ -352,6 +370,31 @@ function getMostPopularType() {
     }
   }
   return maxType;
+}
+
+function analyzeIndividualPokemon(pokemon) {
+  if (!pokemon.type) pokemon.type = pokemon.type1 || "Normal";
+  
+  // 1. Compare to others of same type
+  const sameTypePokemon = data.filter(d => (d.type1 || d.type) === pokemon.type);
+  const typeRank = sameTypePokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                 .findIndex(d => d.name === pokemon.name) + 1;
+  const typePercentile = typeRank / sameTypePokemon.length;
+
+  // 2. Compare to others with similar stats (±50 total)
+  const similarStatsPokemon = data.filter(d => Math.abs(d.total - pokemon.total) < 50);
+  const statsRank = similarStatsPokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                      .findIndex(d => d.name === pokemon.name) + 1;
+  const statsPercentile = statsRank / similarStatsPokemon.length;
+
+  return {
+    typeInfluence: typePercentile <= 0.25 ? "strong type influence" : 
+                   typePercentile <= 0.5 ? "moderate type influence" : "weak type influence",
+    statsInfluence: statsPercentile <= 0.25 ? "strong stats influence" : 
+                    statsPercentile <= 0.5 ? "moderate stats influence" : "weak stats influence",
+    typeRank: `${typeRank}/${sameTypePokemon.length} among ${pokemon.type} types`,
+    statsRank: `${statsRank}/${similarStatsPokemon.length} among similar stat Pokémon`
+  };
 }
 
 function calculateCorrelation(attr) {
