@@ -11,6 +11,7 @@ let dots;
 let typeCounts = {};
 let barScaleX, barScaleY;
 let bars;
+let mostPopularPokemon = { name: "None", votes: 0, type: "None" };
 const dotSize = 6;
 const columns = 50;
 const padding = 2;
@@ -269,6 +270,162 @@ const pokeIdByName = {
   "Dragonite": 149
 };
 
+const statusText = d3.select("#status-text");
+
+// Update status text
+function updateStatusText(scene, data = null) {
+  let text = "";
+  console.log("Updating status text:", { scene, data }); // Debug line
+  switch(scene) {
+    case 0: // Scene 1
+      const attr = statAttributes[currentAttrIndex];
+      const correlation = calculateCorrelation(attr);
+      text = `Viewing the scatterplot, the data shows a ${correlation} correlation between Pokémon popularity and ${formatAttributeName(attr)}.`;
+      break;
+    case 1:
+      // If no data provided and we're not forcing a clear, keep the existing text
+      if (data === null && scene === currentScene) return;
+      if (data && data.isInitialView) {
+        text = `Viewing the current data, it seems that ${data.strongerFactor} has more of an effect on Pokémon popularity. Click any Pokémon for details.`;
+        console.log("Setting initial scene 2 text:", text); // Debug line
+      } else if (data && data.pokemonName) {
+        text = `Viewing details for ${data.pokemonName}: Overall, ${data.getDominantInfluence(data.pokemon)} appears to have more effect on popularity for ${data.pokemonName}.`;
+      }
+      break;
+    case 2: // Scene 3
+      const progress = animationIndex > 0 ? ` (${Math.round((animationIndex / voteDots.length) * 100)}% complete)` : '';
+      const hasCorrelation = mostPopularPokemon.type === getMostPopularType() ? 
+        "be a correlation between the most popular Pokémon type and the most popular Pokémon. Currently, the most popular Pokémon's type matches the most popular type!" : 
+        "not be a correlation between the most popular Pokémon type and the most popular Pokémon. Currently, the most popular Pokémon's type doesn't match the most popular type.";
+      text = `At this point in time${progress}, it appears that there may ${hasCorrelation}`;
+      break;
+  }
+  
+  console.log("Final status text:", text); // Debug line
+  
+  statusText.text(text)
+    .style("color", "#80d8ff")
+    .style("font-family", "'Press Start 2P', monospace")
+    .style("font-size", "12px")
+    .style("margin-top", "10px")
+    .style("text-align", "center");
+}
+
+function getDominantInfluence(pokemon) {
+  // Compare to others of same type
+  const sameTypePokemon = data.filter(d => (d.type1 || d.type) === pokemon.type);
+  const typeRank = sameTypePokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                 .findIndex(d => d.name === pokemon.name) + 1;
+  
+  // Compare to others with similar stats (±50 total)
+  const similarStatsPokemon = data.filter(d => Math.abs(d.total - pokemon.total) < 50);
+  const statsRank = similarStatsPokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                     .findIndex(d => d.name === pokemon.name) + 1;
+
+  // Determine which factor is more dominant
+  const typePercentile = typeRank / sameTypePokemon.length;
+  const statsPercentile = statsRank / similarStatsPokemon.length;
+  
+  return statsPercentile < typePercentile ? "base stats" : "type";
+}
+
+function analyzeTop10(top10) {
+  // Calculate average stats for top 10
+  const avgTotal = d3.mean(top10, d => d.total);
+  const allAvgTotal = d3.mean(data, d => d.total);
+
+  // Count types in top 10
+  const typeCounts = {};
+  top10.forEach(d => {
+    const type = d.type1 || d.type;
+    typeCounts[type] = (typeCounts[type] || 0) + 1;
+  });
+  const dominantType = Object.entries(typeCounts).sort((a,b) => b[1] - a[1])[0][0];
+
+  // Determine which factor is more significant
+  const typeEffect = top10.filter(d => (d.type1 || d.type) === dominantType).length / 10;
+  const statsEffect = (avgTotal - allAvgTotal) / allAvgTotal;
+
+  console.log("Analysis results:", { // Add this debug line
+    strongerFactor: statsEffect > typeEffect ? "Pokémon base stats" : "Pokémon type",
+    avgTotal,
+    allAvgTotal,
+    dominantType,
+    typeEffect,
+    statsEffect
+  });
+
+  return {
+    strongerFactor: statsEffect > typeEffect ? "Pokémon base stats" : "Pokémon type"
+  };
+}
+
+function getMostPopularType() {
+  let maxType = "None";
+  let maxCount = 0;
+  for (const t of types) {
+    if (typeCounts[t] > maxCount) {
+      maxCount = typeCounts[t];
+      maxType = t;
+    }
+  }
+  return maxType;
+}
+
+function analyzeIndividualPokemon(pokemon) {
+  if (!pokemon.type) pokemon.type = pokemon.type1 || "Normal";
+  
+  // 1. Compare to others of same type
+  const sameTypePokemon = data.filter(d => (d.type1 || d.type) === pokemon.type);
+  const typeRank = sameTypePokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                 .findIndex(d => d.name === pokemon.name) + 1;
+  const typePercentile = typeRank / sameTypePokemon.length;
+
+  // 2. Compare to others with similar stats (±50 total)
+  const similarStatsPokemon = data.filter(d => Math.abs(d.total - pokemon.total) < 50);
+  const statsRank = similarStatsPokemon.sort((a,b) => b["Number of votes"] - a["Number of votes"])
+                                      .findIndex(d => d.name === pokemon.name) + 1;
+  const statsPercentile = statsRank / similarStatsPokemon.length;
+
+  return {
+    typeInfluence: typePercentile <= 0.25 ? "strong type influence" : 
+                   typePercentile <= 0.5 ? "moderate type influence" : "weak type influence",
+    statsInfluence: statsPercentile <= 0.25 ? "strong stats influence" : 
+                    statsPercentile <= 0.5 ? "moderate stats influence" : "weak stats influence",
+    typeRank: `${typeRank}/${sameTypePokemon.length} among ${pokemon.type} types`,
+    statsRank: `${statsRank}/${similarStatsPokemon.length} among similar stat Pokémon`
+  };
+}
+
+function calculateCorrelation(attr) {
+  // Simple correlation calculation (Pearson's r would be better but this is simplified)
+  const votes = data.map(d => d["Number of votes"]);
+  const stats = data.map(d => d[attr]);
+  
+  const avgVotes = d3.mean(votes);
+  const avgStats = d3.mean(stats);
+  
+  let numerator = 0;
+  let denomVotes = 0;
+  let denomStats = 0;
+  
+  for (let i = 0; i < data.length; i++) {
+    const voteDiff = votes[i] - avgVotes;
+    const statDiff = stats[i] - avgStats;
+    numerator += voteDiff * statDiff;
+    denomVotes += voteDiff * voteDiff;
+    denomStats += statDiff * statDiff;
+  }
+  
+  const correlation = numerator / Math.sqrt(denomVotes * denomStats);
+  
+  if (correlation > 0.5) return "strong positive";
+  if (correlation > 0.2) return "moderate positive";
+  if (correlation > -0.2) return "weak";
+  if (correlation > -0.5) return "moderate negative";
+  return "strong negative";
+}
+
 const svg = d3.select("#visualization")
   .append("svg")
   .attr("width", width)
@@ -284,11 +441,18 @@ function showScene(sceneIndex) {
   document.getElementById("pause-btn").style.display = "none";
   document.getElementById("restart-btn").style.display = "none";
 
-  if (sceneIndex === 0) showScene1();
-  else if (sceneIndex === 1) showScene2();
-  else if (sceneIndex === 2) {
+  // Clear any existing status text
+  statusText.text("");
+
+  if (sceneIndex === 0) {
+    showScene1();
+    updateStatusText(0);
+  } else if (sceneIndex === 1) {
+    showScene2();
+    updateStatusText(1);
+  } else if (sceneIndex === 2) {
     showScene3();
-    // animation does NOT start automatically
+    updateStatusText(2);
   }
 }
 
@@ -316,6 +480,7 @@ const statAttributes = ["total", "attack", "defense", "hp", "speed", "sp_attack"
 // Scene 1: Slide Show of Popularity vs Base Stats
 function showScene1() {
   renderAttributeSlide(statAttributes[currentAttrIndex]);
+  updateStatusText(0);
 }
 
 function renderAttributeSlide(attr) {
@@ -517,6 +682,8 @@ function renderAttributeSlide(attr) {
     .text("<- Previous Attribute");
 
   addButtonHover(prevGroup);
+
+  updateStatusText(0);
 }
 
 function formatAttributeName(attr) {
@@ -699,7 +866,24 @@ function showScene2() {
       <h3 class="poke-desc-title">${name}</h3>
       <p class="poke-desc-text">${description}</p>
     `);
+    
+    // Get the current analysis
+    const top10 = data
+      .sort((a, b) => b["Number of votes"] - a["Number of votes"])
+      .slice(0, 10);
+    const analysis = analyzeTop10(top10);
+    
+    updateStatusText(1, { 
+      pokemonName: name,
+      strongerFactor: analysis.strongerFactor
+    });
   }
+  
+  const analysis = analyzeTop10(top10);
+  updateStatusText(1, { 
+    strongerFactor: analysis.strongerFactor,
+    isInitialView: true  // Flag to indicate this is the initial view
+  });
 }
 
 // Scene 3: FlowingData-style animation in D3 where each dot represents a Pokémon and bars grow by votes - Video Visual Genre
@@ -887,15 +1071,48 @@ function showScene3() {
     .style("fill", "#fefae0")
     .text("0");
 
+  const mostPopularPokemonY = totalVotesTextY + 30;
+  // Remove previous text if any
+  svg.selectAll("text.most-popular-pokemon-text, text.most-popular-pokemon-value").remove();
+
+  svg.append("text")
+    .attr("class", "most-popular-pokemon-text")
+    .attr("x", 17)
+    .attr("y", mostPopularPokemonY)
+    .attr("text-anchor", "left")
+    .text("Most Popular Pokémon: ");
+
+  svg.append("text")
+    .attr("class", "most-popular-pokemon-value")
+    .attr("x", 355)
+    .attr("y", mostPopularPokemonY)
+    .attr("text-anchor", "left")
+    .text("None")
+    .style("fill", "#80d8ff");
+
+  svg.append("text")
+    .attr("class", "correlation-text")
+    .attr("x", 17)
+    .attr("y", mostPopularPokemonY + 30)
+    .attr("text-anchor", "left")
+    .style("font-size", "12px")
+    .style("fill", "#80d8ff")
+    .text("");
+
   animationIndex = 0;
 
   document.getElementById("play-btn").style.display = "inline-block";
   document.getElementById("pause-btn").style.display = "none";
   document.getElementById("restart-btn").style.display = "inline-block";
+
+  updateStatusText(2);
 }
 
 function playAnimation() {
   if (animationTimer) return;
+
+  // Reset tracking when restarting
+  mostPopularPokemon = { name: "None", votes: 0, type: "None" };
 
   // If finished, restart from beginning
   if (animationIndex >= voteDots.length) {
@@ -930,6 +1147,15 @@ function playAnimation() {
     typeCounts[dot.type] += dot.votes;
     barScaleX.domain([0, d3.max(Object.values(typeCounts))]);
 
+    // Update most popular Pokémon if current dot has more votes
+    if (dot.votes > mostPopularPokemon.votes) {
+      mostPopularPokemon = {
+        name: dot.name,
+        votes: dot.votes,
+        type: dot.type
+      };
+    }
+
     const barsGroup = svg.select("g.bars");
 
     barsGroup.selectAll("rect")
@@ -963,15 +1189,22 @@ function playAnimation() {
     }
     const percent = totalVotes > 0 ? ((maxCount / totalVotes) * 100).toFixed(1) : 0;
 
-    // Update popular type and total votes text
+    // Update most popular type text
     svg.select("text.popular-type-value")
       .text(`${maxType} (${percent}%)`)
       .style("fill", typeColors(maxType));
 
+    // Update total votes text
     svg.select("text.total-votes-value")
       .text(totalVotes);
 
+    // Update most popular Pokémon display
+    svg.select("text.most-popular-pokemon-value")
+      .text(mostPopularPokemon.name)
+      .style("fill", typeColors(mostPopularPokemon.type));
+
     animationIndex++;
+    updateStatusText(2);
   }, 50);
 }
 
@@ -984,6 +1217,8 @@ function pauseAnimation() {
   document.getElementById("play-btn").style.display = "inline-block";
   document.getElementById("pause-btn").style.display = "none";
   document.getElementById("restart-btn").style.display = "inline-block";
+
+  updateStatusText(2);
 }
 
 function restartAnimation() {
@@ -992,6 +1227,7 @@ function restartAnimation() {
     animationTimer = null;
   }
   animationIndex = 0;
+  mostPopularPokemon = { name: "None", votes: 0, type: "None" };
 
   // Reset all dots to gray
   dots.attr("fill", "#ccc");
@@ -1018,11 +1254,16 @@ function restartAnimation() {
     .style("fill", "#80d8ff");
   svg.select(".total-votes-value")
     .text("0");
+  svg.select(".most-popular-pokemon-value")
+    .text("None")
+    .style("fill", "#80d8ff");
 
   // Update buttons: show Play, hide Pause
   document.getElementById("play-btn").style.display = "inline-block";
   document.getElementById("pause-btn").style.display = "none";
   document.getElementById("restart-btn").style.display = "inline-block";
+
+  updateStatusText(2);
 }
 
 d3.selectAll("#controls button")
